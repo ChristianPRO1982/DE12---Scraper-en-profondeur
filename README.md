@@ -275,6 +275,7 @@ data/processed/          Donnees nettoyees intermediaires
 db/                      Script SQL de creation de la base
 docs/                    Documentation du projet
 exports/                 Exports JSON
+quality/                 Resultats de qualite et validation finale
 compose.yaml             PostgreSQL local
 pyproject.toml           Configuration UV et dependances Python
 scrapy.cfg               Point d'entree Scrapy
@@ -313,6 +314,7 @@ Livrables :
 - [18 - Livrable - Documentation finale](docs/18-livrable-documentation-finale.md)
 - [19 - Livrable - Validation finale](docs/19-livrable-validation-finale.md)
 - [20 - Livrable - Principes de code](docs/20-livrable-principes-code.md)
+- [Resultats qualite et validation](quality/result.md)
 
 ## Qualite
 
@@ -325,6 +327,9 @@ uv run ruff format .
 ```
 
 La couverture de tests attendue est configuree a 100%.
+
+Les resultats detailles de validation sont consignes dans
+[quality/result.md](quality/result.md).
 
 ## Etat actuel
 
