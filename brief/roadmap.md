@@ -56,7 +56,7 @@ Avant d'ecrire le scraper de production :
 
 Documentation a completer :
 
-- `docs/08-livrable-journal-de-bord.md` : complete ;
+- `docs/09-livrable-journal-de-bord.md` : complete ;
 - `docs/03-preparation-fonctionnement.md` : complete ;
 - `docs/05-phase-1-reconnaissance.md` : ajoute.
 
@@ -99,7 +99,7 @@ Resultat attendu en fin de J1 :
 Documentation :
 
 - `docs/06-phase-1-collecteur-pages-liste.md` : ajoute ;
-- `docs/08-livrable-journal-de-bord.md` : complete.
+- `docs/09-livrable-journal-de-bord.md` : complete.
 
 ## 4. Collecteur des fiches produit
 
@@ -153,7 +153,7 @@ uv run scrapy crawl books_details -O exports/books_details.json
 Documentation :
 
 - `docs/07-phase-2-collecteur-fiches-produit.md` : ajoute ;
-- `docs/08-livrable-journal-de-bord.md` : complete.
+- `docs/09-livrable-journal-de-bord.md` : complete.
 
 ## 5. Mode echantillon
 
@@ -193,6 +193,8 @@ L'option `-O` ecrase l'ancien export et evite un nettoyage manuel.
 
 ## 6. Temporisation et User-Agent
 
+Statut : realise.
+
 Configurer Scrapy simplement :
 
 - `USER_AGENT` explicite ;
@@ -206,6 +208,56 @@ Principe recommande :
 
 - aller assez lentement pour ne pas envoyer trop de requetes en parallele ;
 - rester assez rapide pour collecter 1 000 fiches dans un temps acceptable.
+
+Resultat obtenu :
+
+- `ROBOTSTXT_OBEY=True` ;
+- `USER_AGENT` explicite ;
+- `DOWNLOAD_DELAY=0.5` ;
+- `RANDOMIZE_DOWNLOAD_DELAY=False` pour eviter une temporisation aleatoire ;
+- `CONCURRENT_REQUESTS_PER_DOMAIN=1` pour garder une collecte simple,
+  rejouable et peu agressive ;
+- commandes rejouables documentees dans le README avec `-O`.
+
+Documentation :
+
+- `docs/08-phase-2-temporisation-user-agent.md` : ajoute ;
+- `README.md` : commandes et reglages ajoutes.
+
+## Correction. Validation des exports
+
+Statut : realise.
+
+Objectif :
+
+- conserver trois exports distincts ;
+- rendre les commandes d'export rejouables avec `-O` ;
+- valider automatiquement les fichiers JSON avant le full scrape et avant le
+  chargement PostgreSQL ;
+- refuser clairement un export incomplet ou incoherent.
+
+Commandes :
+
+```bash
+uv run python -m books_catalog_scraper.validate_exports --sample
+uv run python -m books_catalog_scraper.validate_exports --full
+```
+
+Resultat obtenu :
+
+- validateur independant du scraping ;
+- controle du schema `books_list.json` ;
+- controle du schema detaille commun au sample et au final ;
+- controle des types, URLs, ratings, stocks, avis, categories, prix et UPC ;
+- comparaison des URLs et des titres entre phase 1 et phase 2 ;
+- statistiques prix/taxe affichees ;
+- code retour non nul en cas d'erreur bloquante ;
+- tests unitaires ajoutes.
+
+Documentation :
+
+- `docs/11-correction-validation-exports.md` : ajoute ;
+- `README.md` : commandes de validation ajoutees.
 
 ## 7. Gestion des erreurs
 
@@ -340,8 +392,10 @@ Mettre a jour :
 - `docs/05-phase-1-reconnaissance.md` ;
 - `docs/06-phase-1-collecteur-pages-liste.md` ;
 - `docs/07-phase-2-collecteur-fiches-produit.md` ;
-- `docs/08-livrable-journal-de-bord.md` ;
-- `docs/09-livrable-observations-prix-taxe.md`.
+- `docs/08-phase-2-temporisation-user-agent.md` ;
+- `docs/09-livrable-journal-de-bord.md` ;
+- `docs/10-livrable-observations-prix-taxe.md` ;
+- `docs/11-correction-validation-exports.md`.
 
 La documentation finale doit expliquer :
 

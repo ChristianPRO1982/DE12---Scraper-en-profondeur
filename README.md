@@ -77,6 +77,15 @@ Variables principales :
 Les reglages Scrapy comme le User-Agent et la temporisation sont places dans
 `books_catalog_scraper/settings.py`.
 
+Reglages principaux :
+
+- `ROBOTSTXT_OBEY=True` ;
+- `USER_AGENT` explicite pour identifier le projet ;
+- `DOWNLOAD_DELAY=0.5` ;
+- `RANDOMIZE_DOWNLOAD_DELAY=False` pour garder un rythme rejouable ;
+- `CONCURRENT_REQUESTS_PER_DOMAIN=1` pour limiter la charge et garder un ordre
+  plus previsible.
+
 ## Commandes Scrapy
 
 Lister les spiders disponibles :
@@ -99,11 +108,36 @@ uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.js
 
 Relancer cette commande remplace l'export precedent grace a l'option `-O`.
 
+Valider l'echantillon :
+
+```bash
+uv run python -m books_catalog_scraper.validate_exports --sample
+```
+
 Collecter toutes les fiches produit :
 
 ```bash
 uv run scrapy crawl books_details -O exports/books_details.json
 ```
+
+Valider l'export final :
+
+```bash
+uv run python -m books_catalog_scraper.validate_exports --full
+```
+
+Sequence recommandee avant le chargement PostgreSQL :
+
+```bash
+uv run scrapy crawl books_list -O exports/books_list.json
+uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json
+uv run python -m books_catalog_scraper.validate_exports --sample
+uv run scrapy crawl books_details -O exports/books_details.json
+uv run python -m books_catalog_scraper.validate_exports --full
+```
+
+Le validateur `--full` echoue clairement si `exports/books_details.json` n'existe
+pas encore ou si l'export final est incomplet.
 
 ## Structure
 
@@ -138,11 +172,13 @@ Phase 1 :
 Phase 2 :
 
 - [07 - Phase 2 - Collecteur des fiches produit](docs/07-phase-2-collecteur-fiches-produit.md)
+- [08 - Phase 2 - Temporisation et User-Agent](docs/08-phase-2-temporisation-user-agent.md)
 
 Livrables :
 
-- [08 - Livrable - Journal de bord](docs/08-livrable-journal-de-bord.md)
-- [09 - Livrable - Observations prix et taxe](docs/09-livrable-observations-prix-taxe.md)
+- [09 - Livrable - Journal de bord](docs/09-livrable-journal-de-bord.md)
+- [10 - Livrable - Observations prix et taxe](docs/10-livrable-observations-prix-taxe.md)
+- [11 - Correction - Validation des exports](docs/11-correction-validation-exports.md)
 
 ## Qualite
 
@@ -166,6 +202,8 @@ Etat actuel :
 - collecteur Scrapy des pages de liste ;
 - collecteur Scrapy des fiches produit ;
 - mode echantillon avec `books_details -a limit=20` ;
+- temporisation et User-Agent configures ;
+- validateur d'exports JSON ;
 - export J1 `exports/books_list.json` ;
 - pytest et coverage configures ;
 - documentation de lancement local.

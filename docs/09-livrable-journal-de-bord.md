@@ -1,4 +1,4 @@
-# 08 - Livrable - Journal de bord
+# 09 - Livrable - Journal de bord
 
 Partie du brief liee : livrable final et suivi des blocages, essais et
 decisions pendant J1 et J2.
@@ -92,6 +92,40 @@ Mode echantillon realise le 2026-09-07.
 - Validation locale : tests ajoutes sur la limite et le rejet d'une limite non
   positive.
 - Validation reseau : `limit=20` a exporte 20 livres avec 0 echec.
+
+### Temporisation et User-Agent
+
+Temporisation et User-Agent documentes le 2026-09-07.
+
+- `ROBOTSTXT_OBEY=True` est conserve pour rester sur le comportement standard de
+  Scrapy.
+- `USER_AGENT` identifie explicitement le projet.
+- `DOWNLOAD_DELAY=0.5` applique une pause fixe entre les requetes vers le meme
+  domaine.
+- `RANDOMIZE_DOWNLOAD_DELAY=False` rend le rythme plus previsible d'un lancement
+  a l'autre.
+- `CONCURRENT_REQUESTS_PER_DOMAIN=1` limite la charge envoyee au site et
+  simplifie le raisonnement pour un projet debutant.
+- Les commandes rejouables sont documentees dans le README avec l'option `-O`.
+- Validation locale : les reglages sont couverts par `tests/test_settings.py`.
+- Validation reseau : un crawl `limit=3` a exporte 3 livres avec 0 echec et a
+  confirme les reglages charges par Scrapy.
+
+### Correction des exports
+
+Correction realisee le 2026-09-07.
+
+- Trois exports distincts sont documentes : liste, sample detaille, final
+  detaille.
+- Les commandes d'export utilisent `-O` pour remplacer proprement le fichier
+  cible.
+- Un validateur independant du scraping est ajoute :
+  `uv run python -m books_catalog_scraper.validate_exports --sample`.
+- Le mode `--full` validera `exports/books_details.json` quand le full scrape
+  aura ete lance.
+- Le validateur controle les champs obligatoires, types, URLs, ratings, stocks,
+  avis, categories, prix, UPC et la coherence des URLs entre phase 1 et phase 2.
+- Validation locale : tests unitaires ajoutes et couverture maintenue a 100%.
 
 ### Reprise apres interruption
 

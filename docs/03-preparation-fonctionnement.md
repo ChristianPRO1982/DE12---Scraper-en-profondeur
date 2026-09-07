@@ -80,6 +80,22 @@ uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.js
 Documentation detaillee :
 
 - [07-phase-2-collecteur-fiches-produit.md](07-phase-2-collecteur-fiches-produit.md)
+- [08-phase-2-temporisation-user-agent.md](08-phase-2-temporisation-user-agent.md)
+
+## Temporisation et User-Agent
+
+Statut : realise.
+
+Le scraper utilise un User-Agent explicite et une temporisation fixe :
+
+- `ROBOTSTXT_OBEY=True` ;
+- `USER_AGENT=DE12-books-scraper/0.1 (...)` ;
+- `DOWNLOAD_DELAY=0.5` ;
+- `RANDOMIZE_DOWNLOAD_DELAY=False` ;
+- `CONCURRENT_REQUESTS_PER_DOMAIN=1`.
+
+Ces choix rendent les commandes plus rejouables et limitent la charge envoyee au
+site.
 
 ## Reprise apres interruption
 
