@@ -17,4 +17,5 @@ def test_scrapy_crawler_behaves_politely() -> None:
 
 def test_scrapy_logging_and_feeds_defaults() -> None:
     assert settings.LOG_LEVEL == "INFO"
+    assert settings.TELNETCONSOLE_ENABLED is False
     assert settings.FEEDS == {}

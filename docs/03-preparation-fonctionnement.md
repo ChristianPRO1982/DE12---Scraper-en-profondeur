@@ -28,9 +28,21 @@ Le collecteur de pages de liste devra parcourir les pages du catalogue Books to
 Scrape et produire, pour chaque livre :
 
 - titre ;
-- prix affiche sur la liste ;
+- prix affiche sur la liste sous le champ `price_list` ;
 - note numerique convertie depuis la classe CSS ;
 - URL de la fiche produit.
+
+Statut : realise avec le spider `books_list`.
+
+Commande :
+
+```bash
+uv run scrapy crawl books_list -O exports/books_list.json
+```
+
+Documentation detaillee :
+
+- [06-phase-1-collecteur-pages-liste.md](06-phase-1-collecteur-pages-liste.md)
 
 ## Phase 2
 

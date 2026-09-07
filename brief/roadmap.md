@@ -55,11 +55,13 @@ Avant d'ecrire le scraper de production :
 
 Documentation a completer :
 
-- `docs/06-livrable-journal-de-bord.md` : complete ;
+- `docs/07-livrable-journal-de-bord.md` : complete ;
 - `docs/03-preparation-fonctionnement.md` : complete ;
 - `docs/05-phase-1-reconnaissance.md` : ajoute.
 
 ## 3. Collecteur des pages de liste
+
+Statut : realise.
 
 Creer un spider Scrapy simple, par exemple `books_list`.
 
@@ -69,7 +71,7 @@ Objectif :
 - suivre le lien `next` plutot que concatener les URLs manuellement ;
 - extraire pour chaque livre :
   - titre ;
-  - prix affiche sur la liste ;
+  - prix affiche sur la liste sous le champ `price_list` ;
   - note ;
   - URL absolue de la fiche produit.
 
@@ -77,6 +79,9 @@ Point important :
 
 - la note est dans une classe CSS, par exemple `star-rating Three` ;
 - elle doit etre convertie en nombre entier.
+- le prix est converti avec `Decimal`, pas avec `float`.
+- une carte produit invalide est journalisee et ignoree au lieu d'arreter toute
+  la page.
 
 Commande cible :
 
@@ -86,8 +91,14 @@ uv run scrapy crawl books_list -O exports/books_list.json
 
 Resultat attendu en fin de J1 :
 
-- un fichier contenant les 1 000 livres avec leur URL de fiche ;
-- des logs indiquant combien de pages ont ete parcourues.
+- un fichier contenant les 1 000 livres avec leur URL de fiche : fait,
+  `exports/books_list.json` ;
+- des logs indiquant combien de pages ont ete parcourues : fait, 50 pages.
+
+Documentation :
+
+- `docs/06-phase-1-collecteur-pages-liste.md` : ajoute ;
+- `docs/07-livrable-journal-de-bord.md` : complete.
 
 ## 4. Collecteur des fiches produit
 
@@ -281,8 +292,9 @@ Mettre a jour :
 - `docs/03-preparation-fonctionnement.md` ;
 - `docs/04-preparation-qualite.md` ;
 - `docs/05-phase-1-reconnaissance.md` ;
-- `docs/06-livrable-journal-de-bord.md` ;
-- `docs/07-livrable-observations-prix-taxe.md`.
+- `docs/06-phase-1-collecteur-pages-liste.md` ;
+- `docs/07-livrable-journal-de-bord.md` ;
+- `docs/08-livrable-observations-prix-taxe.md`.
 
 La documentation finale doit expliquer :
 

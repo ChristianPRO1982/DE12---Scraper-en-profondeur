@@ -88,7 +88,7 @@ data/raw/                Donnees brutes intermediaires
 data/processed/          Donnees nettoyees intermediaires
 db/                      Script SQL de creation de la base
 docs/                    Documentation du projet
-exports/                 Futurs exports CSV ou JSON
+exports/                 Exports CSV ou JSON
 compose.yaml             PostgreSQL local
 pyproject.toml           Configuration UV et dependances Python
 scrapy.cfg               Point d'entree Scrapy
@@ -106,11 +106,12 @@ Preparation :
 Phase 1 :
 
 - [05 - Phase 1 - Reconnaissance du site](docs/05-phase-1-reconnaissance.md)
+- [06 - Phase 1 - Collecteur des pages de liste](docs/06-phase-1-collecteur-pages-liste.md)
 
 Livrables :
 
-- [06 - Livrable - Journal de bord](docs/06-livrable-journal-de-bord.md)
-- [07 - Livrable - Observations prix et taxe](docs/07-livrable-observations-prix-taxe.md)
+- [07 - Livrable - Journal de bord](docs/07-livrable-journal-de-bord.md)
+- [08 - Livrable - Observations prix et taxe](docs/08-livrable-observations-prix-taxe.md)
 
 ## Qualite
 
@@ -126,14 +127,15 @@ La couverture de tests attendue est configuree a 100%.
 
 ## Etat actuel
 
-Structure initiale uniquement :
+Etat actuel :
 
 - configuration UV ;
 - configuration Docker Compose PostgreSQL ;
 - script SQL de creation de la base ;
-- projet Scrapy vide ;
+- collecteur Scrapy des pages de liste ;
+- export J1 `exports/books_list.json` ;
 - pytest et coverage configures ;
 - documentation de lancement local.
 
-Le scraping, les pipelines et le chargement en base ne sont pas
-encore developpes.
+La collecte des fiches produit, les pipelines et le chargement en base ne sont
+pas encore developpes.
