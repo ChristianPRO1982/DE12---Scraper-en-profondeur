@@ -249,6 +249,18 @@ Validation finale realisee le 2026-09-07.
   1 000 livres par upsert.
 - Les requetes de demonstration passent sur la base finale.
 
+### Principes de code
+
+Principes de code documentes le 2026-09-07.
+
+- Le projet conserve peu de modules et des noms explicites.
+- Le SQL reste visible, sans ORM ni framework de migration.
+- Les conversions metier sont isolees dans `parsers.py`.
+- Les controles d'export sont separes du scraping.
+- Les commandes restent rejouables avec `-O` pour les exports et upsert
+  PostgreSQL pour la base.
+- La couverture de tests reste exigee a 100%.
+
 ## Blocages rencontres
 
 A completer au fil du projet.

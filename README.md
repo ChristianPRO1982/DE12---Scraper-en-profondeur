@@ -289,6 +289,7 @@ Livrables :
 - [17 - Livrable - Requetes de demonstration](docs/17-livrable-requetes-demonstration.md)
 - [18 - Livrable - Documentation finale](docs/18-livrable-documentation-finale.md)
 - [19 - Livrable - Validation finale](docs/19-livrable-validation-finale.md)
+- [20 - Livrable - Principes de code](docs/20-livrable-principes-code.md)
 
 ## Qualite
 
@@ -320,6 +321,7 @@ Etat actuel :
 - script de chargement separe ;
 - requetes SQL de demonstration ;
 - documentation finale ;
+- principes de code documentes ;
 - export J1 `exports/books_list.json` ;
 - export sample `exports/books_details_sample.json` ;
 - export final `exports/books_details.json` ;

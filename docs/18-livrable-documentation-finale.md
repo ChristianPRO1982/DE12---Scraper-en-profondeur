@@ -111,6 +111,8 @@ La couverture attendue est `100%`.
 - Script de chargement : `docs/15-phase-2-script-chargement.md`.
 - Exports : `docs/16-phase-2-exports.md`.
 - Requetes de demonstration : `docs/17-livrable-requetes-demonstration.md`.
+- Validation finale : `docs/19-livrable-validation-finale.md`.
+- Principes de code : `docs/20-livrable-principes-code.md`.
 
 ## Validation finale
 

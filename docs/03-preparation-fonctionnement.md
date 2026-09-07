@@ -247,3 +247,11 @@ a charge 1 000 livres dans PostgreSQL.
 Documentation detaillee :
 
 - [19-livrable-validation-finale.md](19-livrable-validation-finale.md)
+
+## Principes de code
+
+Statut : realise.
+
+Les principes de code sont documentes dans :
+
+- [20-livrable-principes-code.md](20-livrable-principes-code.md)

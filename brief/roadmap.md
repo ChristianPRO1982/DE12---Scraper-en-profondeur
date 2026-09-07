@@ -624,6 +624,8 @@ Documentation :
 
 ## 15. Principes de code
 
+Statut : realise.
+
 Le code doit rester robuste mais lisible :
 
 - peu de fichiers ;
@@ -635,3 +637,21 @@ Le code doit rester robuste mais lisible :
 - logs comprehensibles ;
 - exceptions ciblees ;
 - pas d'abstraction avancee inutile.
+
+Resultat obtenu :
+
+- projet organise en modules courts et explicites ;
+- logique Scrapy lisible dans deux spiders ;
+- conversions isolees dans `parsers.py` ;
+- extraction des cartes de liste isolee dans `extractors.py` ;
+- politique d'erreurs isolee dans `error_policy.py` ;
+- SQL PostgreSQL explicite, sans ORM ;
+- schema SQL idempotent dans `db/schema.sql` ;
+- chargement rejouable par upsert sur `books.upc` ;
+- validation des exports independante du scraping ;
+- tests maintenus avec couverture 100%.
+
+Documentation :
+
+- `docs/20-livrable-principes-code.md` : ajoute ;
+- `README.md` : lien ajoute.
