@@ -164,3 +164,26 @@ uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O e
 Documentation detaillee :
 
 - [13-phase-2-stockage-postgresql.md](13-phase-2-stockage-postgresql.md)
+
+## Script de chargement
+
+Statut : realise.
+
+Le script `scripts.load_books` charge un export JSON detaille sans relancer le
+scraping.
+
+Commande sample :
+
+```bash
+uv run python -m scripts.load_books --input exports/books_details_sample.json --allow-sample
+```
+
+Commande finale :
+
+```bash
+uv run python -m scripts.load_books --input exports/books_details.json
+```
+
+Documentation detaillee :
+
+- [15-phase-2-script-chargement.md](15-phase-2-script-chargement.md)

@@ -159,14 +159,28 @@ Valider l'export final :
 uv run python -m books_catalog_scraper.validate_exports --full
 ```
 
+Charger un export sample deja produit dans PostgreSQL :
+
+```bash
+uv run python -m scripts.load_books --input exports/books_details_sample.json --allow-sample
+```
+
+Charger l'export final deja produit dans PostgreSQL :
+
+```bash
+uv run python -m scripts.load_books --input exports/books_details.json
+```
+
 Sequence recommandee avant le chargement PostgreSQL :
 
 ```bash
 uv run scrapy crawl books_list -O exports/books_list.json
 uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -O exports/books_details_sample.json
 uv run python -m books_catalog_scraper.validate_exports --sample
-uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
+uv run python -m scripts.load_books --input exports/books_details_sample.json --allow-sample
+uv run scrapy crawl books_details -a max_errors=50 -O exports/books_details.json
 uv run python -m books_catalog_scraper.validate_exports --full
+uv run python -m scripts.load_books --input exports/books_details.json
 ```
 
 Le validateur `--full` echoue clairement si `exports/books_details.json` n'existe
@@ -215,6 +229,7 @@ Phase 2 :
 - [12 - Phase 2 - Gestion des erreurs](docs/12-phase-2-gestion-erreurs.md)
 - [13 - Phase 2 - Stockage PostgreSQL](docs/13-phase-2-stockage-postgresql.md)
 - [14 - Phase 2 - Reprise apres interruption](docs/14-phase-2-reprise-apres-interruption.md)
+- [15 - Phase 2 - Script de chargement](docs/15-phase-2-script-chargement.md)
 
 Livrables :
 
@@ -249,8 +264,9 @@ Etat actuel :
 - validateur d'exports JSON ;
 - pipeline optionnel de stockage PostgreSQL ;
 - reprise apres interruption par upsert PostgreSQL ;
+- script de chargement separe ;
 - export J1 `exports/books_list.json` ;
 - pytest et coverage configures ;
 - documentation de lancement local.
 
-Le script de chargement separe n'est pas encore developpe.
+Les exports finaux des 1 000 fiches et le chargement complet restent a lancer.

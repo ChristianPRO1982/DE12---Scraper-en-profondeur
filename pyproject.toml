@@ -29,7 +29,7 @@ pythonpath = ["."]
 
 [tool.coverage.run]
 branch = true
-source = ["books_catalog_scraper"]
+source = ["books_catalog_scraper", "scripts"]
 
 [tool.coverage.report]
 fail_under = 100

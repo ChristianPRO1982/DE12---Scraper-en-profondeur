@@ -398,6 +398,8 @@ Documentation :
 
 ## 10. Script de chargement
 
+Statut : realise.
+
 Le brief demande un script de creation de la base et un script de chargement.
 
 Le script de creation existe dans :
@@ -406,7 +408,7 @@ Le script de creation existe dans :
 db/schema.sql
 ```
 
-Ajouter ensuite un script de chargement, par exemple :
+Script de chargement ajoute :
 
 ```text
 scripts/load_books.py
@@ -421,6 +423,31 @@ Role du script :
 
 Le pipeline Scrapy peut etre utilise pour le chargement direct, mais le script de
 chargement separe reste utile comme livrable explicite du brief.
+
+Resultat obtenu :
+
+- script lanceable avec `uv run python -m scripts.load_books` ;
+- chargement d'un export JSON detaille ;
+- validation de l'export avant chargement ;
+- mode sample explicite avec `--allow-sample` ;
+- mode final strict avec 1 000 fiches attendues ;
+- reutilisation de `upsert_book` ;
+- `commit` apres chaque livre ;
+- script inclus dans la couverture de tests ;
+- validation PostgreSQL reelle sur `exports/books_details_sample.json` relancee
+  sans doublon UPC.
+
+Commandes rejouables :
+
+```bash
+uv run python -m scripts.load_books --input exports/books_details_sample.json --allow-sample
+uv run python -m scripts.load_books --input exports/books_details.json
+```
+
+Documentation :
+
+- `docs/15-phase-2-script-chargement.md` : ajoute ;
+- `README.md` : commandes de chargement separe ajoutees.
 
 ## 11. Exports
 
@@ -477,7 +504,8 @@ Mettre a jour :
 - `docs/11-correction-validation-exports.md` ;
 - `docs/12-phase-2-gestion-erreurs.md` ;
 - `docs/13-phase-2-stockage-postgresql.md` ;
-- `docs/14-phase-2-reprise-apres-interruption.md`.
+- `docs/14-phase-2-reprise-apres-interruption.md` ;
+- `docs/15-phase-2-script-chargement.md`.
 
 La documentation finale doit expliquer :
 

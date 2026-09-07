@@ -175,6 +175,22 @@ Chargement PostgreSQL realise le 2026-09-07.
 - Validation PostgreSQL reelle : un echantillon `limit=3` a sauvegarde 3 livres
   et 3 categories, avec 0 doublon UPC apres relance.
 
+### Script de chargement
+
+Script de chargement realise le 2026-09-07.
+
+- Script ajoute : `scripts/load_books.py`.
+- Commande sample :
+  `uv run python -m scripts.load_books --input exports/books_details_sample.json --allow-sample`.
+- Commande finale :
+  `uv run python -m scripts.load_books --input exports/books_details.json`.
+- Le script valide l'export avant chargement.
+- Il reutilise les memes upserts que le pipeline Scrapy.
+- Validation locale : tests unitaires ajoutes et `scripts` inclus dans la
+  couverture.
+- Validation PostgreSQL reelle : relance du script sur
+  `exports/books_details_sample.json`, 20 livres en base et 0 doublon UPC.
+
 ## Blocages rencontres
 
 A completer au fil du projet.
