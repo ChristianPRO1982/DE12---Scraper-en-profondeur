@@ -232,6 +232,23 @@ Documentation finale mise a jour le 2026-09-07.
 - Les commandes importantes restent rejouables avec `-O` cote Scrapy et upsert
   cote PostgreSQL.
 
+### Validation finale
+
+Validation finale realisee le 2026-09-07.
+
+- Full scrape lance avec :
+  `uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json`.
+- Resultat Scrapy : 50 pages de liste, 1 000 fiches programmees, 1 000 livres
+  exportes, 1 000 livres sauvegardes dans PostgreSQL, 0 echec.
+- Export final valide avec :
+  `uv run python -m books_catalog_scraper.validate_exports --full`.
+- Resultat export : 1 000 fiches, 1 000 UPC uniques, 0 URL manquante, 0 URL
+  supplementaire, 0 erreur bloquante.
+- Resultat PostgreSQL : 1 000 livres, 0 doublon UPC, 0 doublon URL produit.
+- Le script `scripts.load_books` a ete relance sur l'export final et a recharge
+  1 000 livres par upsert.
+- Les requetes de demonstration passent sur la base finale.
+
 ## Blocages rencontres
 
 A completer au fil du projet.

@@ -288,6 +288,7 @@ Livrables :
 - [11 - Correction - Validation des exports](docs/11-correction-validation-exports.md)
 - [17 - Livrable - Requetes de demonstration](docs/17-livrable-requetes-demonstration.md)
 - [18 - Livrable - Documentation finale](docs/18-livrable-documentation-finale.md)
+- [19 - Livrable - Validation finale](docs/19-livrable-validation-finale.md)
 
 ## Qualite
 
@@ -321,7 +322,10 @@ Etat actuel :
 - documentation finale ;
 - export J1 `exports/books_list.json` ;
 - export sample `exports/books_details_sample.json` ;
+- export final `exports/books_details.json` ;
+- chargement complet des 1 000 livres valide dans PostgreSQL ;
 - pytest et coverage configures ;
 - documentation de lancement local.
 
-Les exports finaux des 1 000 fiches et le chargement complet restent a lancer.
+Le full scrape final a ete valide avec 1 000 fiches exportees et 1 000 livres
+charges dans PostgreSQL.

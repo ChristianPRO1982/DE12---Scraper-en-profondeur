@@ -236,3 +236,14 @@ Statut : realise.
 La synthese finale du projet est disponible dans :
 
 - [18-livrable-documentation-finale.md](18-livrable-documentation-finale.md)
+
+## Validation finale
+
+Statut : realise.
+
+Le full scrape final a produit `exports/books_details.json` avec 1 000 fiches et
+a charge 1 000 livres dans PostgreSQL.
+
+Documentation detaillee :
+
+- [19-livrable-validation-finale.md](19-livrable-validation-finale.md)

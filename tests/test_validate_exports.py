@@ -237,12 +237,20 @@ def test_load_json_list_reports_reading_errors(tmp_path: Path) -> None:
     assert any("chaque entree doit etre un objet" in error for error in errors)
 
 
-def test_main_returns_error_for_missing_default_full_export(capsys) -> None:
+def test_main_returns_error_for_missing_default_full_export(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
+    list_path = tmp_path / "books_list.json"
+    details_path = tmp_path / "books_details.json"
+    write_json(list_path, [list_book(index) for index in range(1, 1001)])
+    monkeypatch.setattr(validate_exports, "LIST_EXPORT_PATH", list_path)
+    monkeypatch.setattr(validate_exports, "DETAILS_EXPORT_PATH", details_path)
+
     status_code = validate_exports.main(["--full"])
 
     output = capsys.readouterr().out
     assert status_code == 1
-    assert "exports/books_details.json: fichier introuvable" in output
+    assert f"{details_path}: fichier introuvable" in output
 
 
 def test_main_returns_success_for_sample_exports(tmp_path: Path, monkeypatch, capsys) -> None:

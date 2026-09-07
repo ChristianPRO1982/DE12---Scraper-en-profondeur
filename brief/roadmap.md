@@ -547,9 +547,7 @@ Documentation :
 
 ## 13. Documentation finale
 
-Statut : realise.
-
-Documentation mise a jour :
+Mettre a jour :
 
 - `README.md` ;
 - `docs/01-preparation-installation.md` ;
@@ -568,10 +566,9 @@ Documentation mise a jour :
 - `docs/14-phase-2-reprise-apres-interruption.md` ;
 - `docs/15-phase-2-script-chargement.md` ;
 - `docs/16-phase-2-exports.md` ;
-- `docs/17-livrable-requetes-demonstration.md` ;
-- `docs/18-livrable-documentation-finale.md`.
+- `docs/17-livrable-requetes-demonstration.md`.
 
-La documentation finale explique :
+La documentation finale doit expliquer :
 
 - installation depuis zero ;
 - lancement de PostgreSQL ;
@@ -584,35 +581,46 @@ La documentation finale explique :
 - choix de l'UPC comme cle ;
 - justification du User-Agent et de la temporisation.
 
-Resultat obtenu :
-
-- README utilisable comme point d'entree ;
-- documentation numerotee dans `docs/` ;
-- page de synthese finale ajoutee ;
-- commandes rejouables documentees pour le sample et le full scrape ;
-- sequence qualite documentee avec Ruff, Pytest et Coverage.
-
 ## 14. Validation finale
 
-Scenario de validation :
+Statut : realise.
+
+Scenario de validation execute :
 
 ```bash
-cp .env.example .env
 uv sync
 docker compose up -d
 docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/schema.sql'
-uv run scrapy crawl books_details -a limit=20
+uv run scrapy list
+uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
+uv run python -m books_catalog_scraper.validate_exports --full
+uv run python -m scripts.load_books --input exports/books_details.json
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/demo_queries.sql'
 ```
 
-Puis :
+Resultat obtenu :
 
-- verifier les logs ;
-- verifier le contenu PostgreSQL ;
-- interrompre et relancer le scraper ;
-- verifier l'absence de doublons ;
-- lancer la collecte complete ;
-- verifier que les 1 000 livres sont presents en base ;
-- verifier que les champs obligatoires sont remplis.
+- schema SQL rejoue sans erreur ;
+- spiders Scrapy visibles ;
+- full scrape termine avec `finish_reason=finished` ;
+- 50 pages de liste parcourues ;
+- 1 000 fiches programmees ;
+- 1 000 livres exportes dans `exports/books_details.json` ;
+- 1 000 livres sauvegardes dans PostgreSQL ;
+- 0 echec Scrapy ;
+- validateur `--full` sans erreur bloquante ;
+- 1 000 UPC uniques ;
+- 0 URL manquante ;
+- 0 URL supplementaire ;
+- 0 doublon UPC en base ;
+- 0 doublon URL produit en base ;
+- script de chargement final rejoue avec 1 000 upserts ;
+- requetes de demonstration executees sur la base finale.
+
+Documentation :
+
+- `docs/19-livrable-validation-finale.md` : ajoute ;
+- `README.md` : etat final mis a jour.
 
 ## 15. Principes de code
 

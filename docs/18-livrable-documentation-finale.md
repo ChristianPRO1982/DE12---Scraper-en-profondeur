@@ -112,8 +112,11 @@ La couverture attendue est `100%`.
 - Exports : `docs/16-phase-2-exports.md`.
 - Requetes de demonstration : `docs/17-livrable-requetes-demonstration.md`.
 
-## Etat restant
+## Validation finale
 
-Le projet est pret pour la validation finale. Les actions longues restantes sont
-le full scrape, la validation `--full` et le chargement complet des 1 000 livres
-en base.
+La validation finale est documentee dans :
+
+- `docs/19-livrable-validation-finale.md`.
+
+Le full scrape final a produit 1 000 fiches dans `exports/books_details.json` et
+1 000 livres sont charges dans PostgreSQL.
