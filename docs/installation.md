@@ -25,6 +25,12 @@ Verifier que PostgreSQL tourne :
 docker compose ps
 ```
 
+Creer le schema de base de donnees :
+
+```bash
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/schema.sql'
+```
+
 Verifier que Scrapy charge le projet :
 
 ```bash

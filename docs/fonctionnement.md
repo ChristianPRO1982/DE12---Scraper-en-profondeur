@@ -36,6 +36,16 @@ base.
 
 ## Base de donnees
 
-PostgreSQL est lance par Docker Compose. Le schema et les scripts de chargement
-ne sont pas encore crees dans cette etape, conformement a la demande de ne pas
-ajouter de migration maintenant.
+PostgreSQL est lance par Docker Compose.
+
+Le schema est cree par [../db/schema.sql](../db/schema.sql). Il contient :
+
+- `categories` : les categories du catalogue ;
+- `books` : les livres collectes, avec `upc` comme cle primaire ;
+- `books_catalog` : vue de lecture avec le nom de categorie ;
+- `books_stock_alerts` : vue des livres en rupture ou en stock faible ;
+- `books_best_rated` : vue des livres notes 4 ou 5.
+
+Il n'y a pas de table intermediaire. Le chargement devra inserer directement les
+categories et les livres, puis utiliser `ON CONFLICT` sur `books.upc` pour rendre
+les executions successives idempotentes.

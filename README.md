@@ -48,6 +48,12 @@ Lancer PostgreSQL :
 docker compose up -d
 ```
 
+Creer les tables :
+
+```bash
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/schema.sql'
+```
+
 Verifier que le projet Scrapy est visible :
 
 ```bash
@@ -79,7 +85,7 @@ books_catalog_scraper/spiders/
 brief/                   Brief ecole
 data/raw/                Donnees brutes intermediaires
 data/processed/          Donnees nettoyees intermediaires
-db/                      Futurs scripts SQL ou chargement
+db/                      Script SQL de creation de la base
 docs/                    Documentation du projet
 exports/                 Futurs exports CSV ou JSON
 compose.yaml             PostgreSQL local
@@ -101,8 +107,9 @@ Structure initiale uniquement :
 
 - configuration UV ;
 - configuration Docker Compose PostgreSQL ;
+- script SQL de creation de la base ;
 - projet Scrapy vide ;
 - documentation de lancement local.
 
-Le scraping, les pipelines, les migrations et le chargement en base ne sont pas
+Le scraping, les pipelines et le chargement en base ne sont pas
 encore developpes.
