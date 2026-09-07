@@ -74,6 +74,7 @@ Variables principales :
 - `POSTGRES_PASSWORD` : mot de passe PostgreSQL.
 - `POSTGRES_HOST` : hote utilise par les scripts Python, `localhost` en local.
 - `POSTGRES_PORT` : port expose par Docker, `5432` par defaut.
+
 Les reglages Scrapy comme le User-Agent et la temporisation sont places dans
 `books_catalog_scraper/settings.py`.
 

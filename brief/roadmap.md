@@ -5,16 +5,29 @@ pour un niveau debutant-intermediaire en Scrapy.
 
 ## 1. Socle projet
 
+Statut : realise.
+
 Etat attendu :
 
-- projet Python gere avec UV ;
-- Scrapy installe ;
-- PostgreSQL lance avec Docker Compose ;
+- projet Python gere avec UV : `pyproject.toml`, `uv.lock` et `uv.toml` ;
+- Scrapy installe : dependance declaree et projet chargeable via `scrapy.cfg` ;
+- PostgreSQL prepare avec Docker Compose : `compose.yaml` ;
 - fichier `.env.example` fourni ;
 - script SQL de creation de base dans `db/schema.sql` ;
-- documentation minimale dans `README.md` et `docs/`.
+- documentation minimale dans `README.md` et `docs/` ;
+- qualite preparee avec Ruff, Pytest et Coverage.
 
 Ce socle ne contient pas encore de spider, de pipeline ou de logique de scraping.
+
+Commandes de verification du socle :
+
+```bash
+uv sync
+uv run scrapy list
+uv run ruff check . && uv run ruff format --check . && uv run pytest -q
+uv run coverage run -m pytest && uv run coverage report -m
+docker compose --env-file .env.example config
+```
 
 ## 2. Reconnaissance du site
 
