@@ -221,6 +221,17 @@ Requetes de demonstration ajoutees le 2026-09-07.
   controles prix/taxe.
 - Elles peuvent etre lancees apres un sample ou apres le full scrape final.
 
+### Documentation finale
+
+Documentation finale mise a jour le 2026-09-07.
+
+- README complete avec installation locale, `.env`, commandes Scrapy, exports,
+  chargement PostgreSQL, requetes SQL et qualite.
+- Page de synthese ajoutee : `docs/18-livrable-documentation-finale.md`.
+- La documentation pointe vers chaque partie du brief.
+- Les commandes importantes restent rejouables avec `-O` cote Scrapy et upsert
+  cote PostgreSQL.
+
 ## Blocages rencontres
 
 A completer au fil du projet.

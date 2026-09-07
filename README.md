@@ -65,6 +65,28 @@ uv run scrapy list
 
 La commande doit lister les spiders `books_list` et `books_details`.
 
+## Parcours complet rejouable
+
+Sequence courte depuis un projet configure :
+
+```bash
+docker compose up -d
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/schema.sql'
+uv run scrapy crawl books_list -O exports/books_list.json
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -O exports/books_details_sample.json
+uv run python -m books_catalog_scraper.validate_exports --sample
+uv run python -m scripts.load_books --input exports/books_details_sample.json --allow-sample
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/demo_queries.sql'
+```
+
+Pour le livrable final, remplacer le sample par :
+
+```bash
+uv run scrapy crawl books_details -a max_errors=50 -O exports/books_details.json
+uv run python -m books_catalog_scraper.validate_exports --full
+uv run python -m scripts.load_books --input exports/books_details.json
+```
+
 ## Configuration .env
 
 Le fichier `.env` n'est pas versionne. Il est cree a partir de `.env.example`.
@@ -265,6 +287,7 @@ Livrables :
 - [10 - Livrable - Observations prix et taxe](docs/10-livrable-observations-prix-taxe.md)
 - [11 - Correction - Validation des exports](docs/11-correction-validation-exports.md)
 - [17 - Livrable - Requetes de demonstration](docs/17-livrable-requetes-demonstration.md)
+- [18 - Livrable - Documentation finale](docs/18-livrable-documentation-finale.md)
 
 ## Qualite
 
@@ -295,6 +318,7 @@ Etat actuel :
 - reprise apres interruption par upsert PostgreSQL ;
 - script de chargement separe ;
 - requetes SQL de demonstration ;
+- documentation finale ;
 - export J1 `exports/books_list.json` ;
 - export sample `exports/books_details_sample.json` ;
 - pytest et coverage configures ;

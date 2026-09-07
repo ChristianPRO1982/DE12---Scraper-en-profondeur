@@ -23,4 +23,5 @@ cp .env.example .env
 
 Le User-Agent et la temporisation Scrapy sont configures dans
 `books_catalog_scraper/settings.py`, car ce sont des reglages propres au crawler.
-Ils seront justifies dans la documentation finale pendant l'implementation.
+Ils sont justifies dans
+[08-phase-2-temporisation-user-agent.md](08-phase-2-temporisation-user-agent.md).

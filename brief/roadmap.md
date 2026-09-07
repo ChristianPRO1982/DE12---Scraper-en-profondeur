@@ -547,7 +547,9 @@ Documentation :
 
 ## 13. Documentation finale
 
-Mettre a jour :
+Statut : realise.
+
+Documentation mise a jour :
 
 - `README.md` ;
 - `docs/01-preparation-installation.md` ;
@@ -566,9 +568,10 @@ Mettre a jour :
 - `docs/14-phase-2-reprise-apres-interruption.md` ;
 - `docs/15-phase-2-script-chargement.md` ;
 - `docs/16-phase-2-exports.md` ;
-- `docs/17-livrable-requetes-demonstration.md`.
+- `docs/17-livrable-requetes-demonstration.md` ;
+- `docs/18-livrable-documentation-finale.md`.
 
-La documentation finale doit expliquer :
+La documentation finale explique :
 
 - installation depuis zero ;
 - lancement de PostgreSQL ;
@@ -580,6 +583,14 @@ La documentation finale doit expliquer :
 - requetes SQL de demonstration ;
 - choix de l'UPC comme cle ;
 - justification du User-Agent et de la temporisation.
+
+Resultat obtenu :
+
+- README utilisable comme point d'entree ;
+- documentation numerotee dans `docs/` ;
+- page de synthese finale ajoutee ;
+- commandes rejouables documentees pour le sample et le full scrape ;
+- sequence qualite documentee avec Ruff, Pytest et Coverage.
 
 ## 14. Validation finale
 

@@ -228,3 +228,11 @@ faibles, les livres les mieux notes, les categories et les controles prix/taxe.
 Documentation detaillee :
 
 - [17-livrable-requetes-demonstration.md](17-livrable-requetes-demonstration.md)
+
+## Documentation finale
+
+Statut : realise.
+
+La synthese finale du projet est disponible dans :
+
+- [18-livrable-documentation-finale.md](18-livrable-documentation-finale.md)
