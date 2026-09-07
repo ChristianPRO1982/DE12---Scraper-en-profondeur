@@ -22,8 +22,9 @@ class BooksDetailsSpider(scrapy.Spider):
         "FEED_EXPORT_ENCODING": "utf-8",
     }
 
-    def __init__(self, *args: object, **kwargs: object) -> None:
+    def __init__(self, limit: str | int | None = None, *args: object, **kwargs: object) -> None:
         super().__init__(*args, **kwargs)
+        self.limit = parse_limit(limit)
         self.pages_seen = 0
         self.product_urls_seen: set[str] = set()
         self.product_requests = 0
@@ -42,6 +43,9 @@ class BooksDetailsSpider(scrapy.Spider):
         )
 
         for product in products:
+            if self.has_reached_limit():
+                break
+
             try:
                 list_book = extract_list_book(product, response)
             except ValueError as error:
@@ -64,7 +68,7 @@ class BooksDetailsSpider(scrapy.Spider):
             )
 
         next_url = response.css("li.next a::attr(href)").get()
-        if next_url:
+        if next_url and not self.has_reached_limit():
             yield response.follow(next_url, callback=self.parse)
         else:
             self.logger.info(
@@ -158,6 +162,9 @@ class BooksDetailsSpider(scrapy.Spider):
             reason,
         )
 
+    def has_reached_limit(self) -> bool:
+        return self.limit is not None and self.product_requests >= self.limit
+
 
 def required_field(product_information: dict[str, str], field_name: str, product_url: str) -> str:
     value = clean_text(product_information.get(field_name))
@@ -173,3 +180,14 @@ def required_text(value: str | None, field_name: str, product_url: str) -> str:
         raise ValueError(f"Champ obligatoire absent {field_name!r} sur {product_url}")
 
     return cleaned_value
+
+
+def parse_limit(value: str | int | None) -> int | None:
+    if value in {None, ""}:
+        return None
+
+    limit = int(value)
+    if limit < 1:
+        raise ValueError("Le parametre limit doit etre un entier positif")
+
+    return limit

@@ -16,6 +16,21 @@ fiche produit trouvee sur les pages de liste.
 uv run scrapy crawl books_details -O exports/books_details.json
 ```
 
+## Mode echantillon
+
+Pour tester rapidement le spider sans collecter les 1 000 fiches, utiliser le
+parametre `limit`.
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json
+```
+
+Le parametre `limit` controle le nombre de fiches produit programmees par le
+spider.
+
+L'option `-O` ecrase l'export precedent. La commande est donc rejouable sans
+nettoyage manuel.
+
 ## Champs extraits
 
 Pour chaque livre, le spider produit :
@@ -68,18 +83,20 @@ uv run pytest -q
 uv run coverage run -m pytest && uv run coverage report -m
 ```
 
-Validation reseau courte :
+Validation reseau courte avec le mode `limit` :
 
 ```bash
-uv run scrapy crawl books_details -s CLOSESPIDER_ITEMCOUNT=3 -O /tmp/books_details_sample.json
+uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json
 ```
 
-Cette commande a exporte 18 fiches reelles avant l'arret automatique Scrapy,
-avec 0 echec d'extraction.
+Validation realisee le 2026-09-07 :
 
-`CLOSESPIDER_ITEMCOUNT` est seulement utilise ici comme controle technique
-rapide. Le vrai parametre metier `limit=20` sera ajoute dans l'etape 5 de la
-roadmap.
+- 1 page de liste parcourue ;
+- 20 fiches programmees ;
+- 20 livres exportes ;
+- 0 echec d'extraction.
+
+La commande peut etre relancee a tout moment.
 
 ## Limites restantes
 

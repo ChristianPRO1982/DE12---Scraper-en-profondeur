@@ -5,6 +5,7 @@ from scrapy.http import HtmlResponse
 
 from books_catalog_scraper.spiders.books_details import (
     BooksDetailsSpider,
+    parse_limit,
     required_field,
     required_text,
 )
@@ -172,6 +173,45 @@ def test_parse_list_page_schedules_product_and_next_requests() -> None:
     assert spider.product_requests == 1
 
 
+def test_parse_list_page_respects_limit() -> None:
+    response = make_response(list_page_html(), url="https://books.toscrape.com/")
+    spider = BooksDetailsSpider(limit="1")
+
+    results = list(spider.parse(response))
+
+    assert len(results) == 1
+    assert results[0].url == (
+        "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+    )
+    assert spider.product_requests == 1
+    assert spider.has_reached_limit()
+
+
+def test_parse_list_page_stops_loop_when_limit_is_reached() -> None:
+    response = make_response(
+        """
+        <article class="product_pod">
+            <p class="star-rating Three"></p>
+            <h3><a href="catalogue/book-1/index.html" title="Book 1">Book 1</a></h3>
+            <p class="price_color">£10.00</p>
+        </article>
+        <article class="product_pod">
+            <p class="star-rating Four"></p>
+            <h3><a href="catalogue/book-2/index.html" title="Book 2">Book 2</a></h3>
+            <p class="price_color">£12.00</p>
+        </article>
+        """,
+        url="https://books.toscrape.com/",
+    )
+    spider = BooksDetailsSpider(limit=1)
+
+    results = list(spider.parse(response))
+
+    assert len(results) == 1
+    assert results[0].url == "https://books.toscrape.com/catalogue/book-1/index.html"
+    assert spider.product_requests == 1
+
+
 def test_parse_list_page_ignores_duplicate_product_url() -> None:
     response = make_response(
         """
@@ -239,3 +279,17 @@ def test_closed_logs_summary() -> None:
     spider.failed_products = 1
 
     spider.closed("finished")
+
+
+def test_parse_limit_accepts_empty_value() -> None:
+    assert parse_limit(None) is None
+    assert parse_limit("") is None
+
+
+def test_parse_limit_rejects_non_positive_value() -> None:
+    try:
+        parse_limit("0")
+    except ValueError as error:
+        assert "entier positif" in str(error)
+    else:
+        raise AssertionError("ValueError attendu")

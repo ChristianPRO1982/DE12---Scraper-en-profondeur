@@ -157,10 +157,12 @@ Documentation :
 
 ## 5. Mode echantillon
 
+Statut : realise.
+
 Ajouter un parametre au spider complet :
 
 ```bash
-uv run scrapy crawl books_details -a limit=20
+uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json
 ```
 
 Objectifs :
@@ -170,6 +172,24 @@ Objectifs :
 - eviter une collecte complete a chaque essai.
 
 Le parametre `limit` doit limiter le nombre de fiches produit visitees.
+
+Resultat obtenu :
+
+- parametre Scrapy `limit` ajoute au spider `books_details` ;
+- `limit=20` programme au maximum 20 fiches produit ;
+- la pagination s'arrete quand la limite est atteinte ;
+- une limite vide garde le comportement complet ;
+- une limite inferieure a 1 est rejetee ;
+- tests ajoutes ;
+- validation reseau realisee avec 20 livres exportes et 0 echec.
+
+Commande rejouable documentee dans le README :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json
+```
+
+L'option `-O` ecrase l'ancien export et evite un nettoyage manuel.
 
 ## 6. Temporisation et User-Agent
 

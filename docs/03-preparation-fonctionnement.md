@@ -71,6 +71,12 @@ Commande :
 uv run scrapy crawl books_details -O exports/books_details.json
 ```
 
+Commande echantillon rejouable :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json
+```
+
 Documentation detaillee :
 
 - [07-phase-2-collecteur-fiches-produit.md](07-phase-2-collecteur-fiches-produit.md)

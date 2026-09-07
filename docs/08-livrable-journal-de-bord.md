@@ -79,6 +79,20 @@ Collecteur realise le 2026-09-07.
 
 Details notes dans `07-phase-2-collecteur-fiches-produit.md`.
 
+### Mode echantillon
+
+Mode echantillon realise le 2026-09-07.
+
+- Parametre ajoute : `limit`.
+- Commande rejouable :
+  `uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json`.
+- Effet : le spider programme au maximum 20 fiches produit.
+- Rejouabilite : l'option Scrapy `-O` remplace l'export precedent a chaque
+  lancement.
+- Validation locale : tests ajoutes sur la limite et le rejet d'une limite non
+  positive.
+- Validation reseau : `limit=20` a exporte 20 livres avec 0 echec.
+
 ### Reprise apres interruption
 
 A completer pendant l'implementation et la demonstration.

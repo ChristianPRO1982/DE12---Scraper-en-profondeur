@@ -77,6 +77,34 @@ Variables principales :
 Les reglages Scrapy comme le User-Agent et la temporisation sont places dans
 `books_catalog_scraper/settings.py`.
 
+## Commandes Scrapy
+
+Lister les spiders disponibles :
+
+```bash
+uv run scrapy list
+```
+
+Collecter uniquement les pages de liste :
+
+```bash
+uv run scrapy crawl books_list -O exports/books_list.json
+```
+
+Collecter un echantillon rejouable de 20 fiches produit :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json
+```
+
+Relancer cette commande remplace l'export precedent grace a l'option `-O`.
+
+Collecter toutes les fiches produit :
+
+```bash
+uv run scrapy crawl books_details -O exports/books_details.json
+```
+
 ## Structure
 
 ```text
@@ -137,9 +165,9 @@ Etat actuel :
 - script SQL de creation de la base ;
 - collecteur Scrapy des pages de liste ;
 - collecteur Scrapy des fiches produit ;
+- mode echantillon avec `books_details -a limit=20` ;
 - export J1 `exports/books_list.json` ;
 - pytest et coverage configures ;
 - documentation de lancement local.
 
-Le pipeline PostgreSQL, le mode echantillon metier et le chargement en base ne
-sont pas encore developpes.
+Le pipeline PostgreSQL et le chargement en base ne sont pas encore developpes.
