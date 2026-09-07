@@ -1,0 +1,53 @@
+# Git and local configuration
+.git
+.gitignore
+.dockerignore
+.env
+.env.*
+
+# Documentation and school brief are not needed in Docker build contexts
+README.md
+docs/
+brief/
+
+# Python local state
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# UV cache
+.uv-cache/
+
+# Scrapy runtime state
+.scrapy/
+
+# Data exports and local outputs
+data/
+exports/
+*.csv
+*.json
+*.jsonl
+*.log
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Personal workspace files
+chris/
+.agents/
+.codex/
