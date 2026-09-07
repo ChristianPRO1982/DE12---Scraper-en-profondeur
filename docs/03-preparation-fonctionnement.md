@@ -187,3 +187,21 @@ uv run python -m scripts.load_books --input exports/books_details.json
 Documentation detaillee :
 
 - [15-phase-2-script-chargement.md](15-phase-2-script-chargement.md)
+
+## Exports
+
+Statut : realise.
+
+Le projet distingue les exports de travail, de demonstration et de livrable
+final :
+
+- `exports/books_list.json` pour la phase 1 ;
+- `exports/books_details_sample.json` pour l'echantillon rejouable ;
+- `exports/books_details.json` pour les 1 000 fiches finales.
+
+Toutes les commandes d'export utilisent `-O` pour remplacer le fichier cible et
+eviter les ajouts involontaires.
+
+Documentation detaillee :
+
+- [16-phase-2-exports.md](16-phase-2-exports.md)

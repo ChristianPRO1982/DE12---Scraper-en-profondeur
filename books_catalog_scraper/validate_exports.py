@@ -40,7 +40,11 @@ def main(argv: list[str] | None = None) -> int:
     mode.add_argument("--full", action="store_true", help="Valide l'export final complet.")
     args = parser.parse_args(argv)
 
-    errors = validate_sample() if args.sample else validate_full()
+    errors = (
+        validate_sample(LIST_EXPORT_PATH, DETAILS_SAMPLE_EXPORT_PATH)
+        if args.sample
+        else validate_full(LIST_EXPORT_PATH, DETAILS_EXPORT_PATH)
+    )
     return 1 if errors else 0
 
 

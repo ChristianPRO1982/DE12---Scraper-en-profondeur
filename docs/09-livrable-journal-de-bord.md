@@ -191,6 +191,23 @@ Script de chargement realise le 2026-09-07.
 - Validation PostgreSQL reelle : relance du script sur
   `exports/books_details_sample.json`, 20 livres en base et 0 doublon UPC.
 
+### Exports
+
+Exports documentes le 2026-09-07.
+
+- Export phase 1 : `exports/books_list.json`.
+- Export sample detaille : `exports/books_details_sample.json`.
+- Export final attendu : `exports/books_details.json`.
+- Les commandes utilisent `-O` pour rendre la regeneration des fichiers
+  rejouable.
+- Les prix restent des chaines JSON pour conserver les valeurs exactes.
+- Le sample sert a tester et demontrer le projet, mais ne remplace pas le
+  livrable final.
+- Validation locale : le validateur `--sample` controle l'export de liste et le
+  sample detaille.
+- Le full scrape et la validation `--full` restent a lancer pour produire le
+  livrable final complet.
+
 ## Blocages rencontres
 
 A completer au fil du projet.

@@ -451,12 +451,39 @@ Documentation :
 
 ## 11. Exports
 
-Prevoir au minimum :
+Statut : realise.
+
+Exports conserves :
 
 - `exports/books_list.json` pour la fin de J1 ;
+- `exports/books_details_sample.json` pour les demonstrations et tests rapides ;
 - `exports/books_details.json` pour le resultat final.
 
-Les exports doivent etre simples a ouvrir et a verifier.
+Resultat obtenu :
+
+- les exports JSON sont produits via Scrapy avec `-O` ;
+- relancer une commande remplace le fichier cible ;
+- le sample garde le meme schema que le final ;
+- `books_list.json` est valide avec 1 000 livres attendus ;
+- `books_details_sample.json` est valide sans exiger 1 000 fiches ;
+- `books_details.json` est reserve au full scrape final ;
+- le validateur `--full` controle les 1 000 fiches, les UPC uniques et la
+  coherence avec l'export de liste.
+
+Commandes rejouables :
+
+```bash
+uv run scrapy crawl books_list -O exports/books_list.json
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -O exports/books_details_sample.json
+uv run python -m books_catalog_scraper.validate_exports --sample
+uv run scrapy crawl books_details -a max_errors=50 -O exports/books_details.json
+uv run python -m books_catalog_scraper.validate_exports --full
+```
+
+Documentation :
+
+- `docs/16-phase-2-exports.md` : ajoute ;
+- `README.md` : section exports ajoutee.
 
 ## 12. Requetes de demonstration
 
@@ -505,7 +532,8 @@ Mettre a jour :
 - `docs/12-phase-2-gestion-erreurs.md` ;
 - `docs/13-phase-2-stockage-postgresql.md` ;
 - `docs/14-phase-2-reprise-apres-interruption.md` ;
-- `docs/15-phase-2-script-chargement.md`.
+- `docs/15-phase-2-script-chargement.md` ;
+- `docs/16-phase-2-exports.md`.
 
 La documentation finale doit expliquer :
 

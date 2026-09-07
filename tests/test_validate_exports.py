@@ -245,12 +245,19 @@ def test_main_returns_error_for_missing_default_full_export(capsys) -> None:
     assert "exports/books_details.json: fichier introuvable" in output
 
 
-def test_main_returns_success_for_sample_exports(capsys) -> None:
+def test_main_returns_success_for_sample_exports(tmp_path: Path, monkeypatch, capsys) -> None:
+    list_path = tmp_path / "books_list.json"
+    details_path = tmp_path / "books_details_sample.json"
+    write_json(list_path, [list_book(index) for index in range(1, 1001)])
+    write_json(details_path, [details_book(1), details_book(2)])
+    monkeypatch.setattr(validate_exports, "LIST_EXPORT_PATH", list_path)
+    monkeypatch.setattr(validate_exports, "DETAILS_SAMPLE_EXPORT_PATH", details_path)
+
     status_code = validate_exports.main(["--sample"])
 
     output = capsys.readouterr().out
     assert status_code == 0
-    assert "fiches detaillees : 20" in output
+    assert "fiches detaillees : 2" in output
 
 
 def test_compute_price_stats_ignores_invalid_prices() -> None:

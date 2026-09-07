@@ -159,6 +159,23 @@ Valider l'export final :
 uv run python -m books_catalog_scraper.validate_exports --full
 ```
 
+## Exports
+
+Les exports sont separes pour garder des livrables lisibles :
+
+- `exports/books_list.json` : phase 1, 1 000 livres attendus avec titre, prix de
+  liste, note et URL produit ;
+- `exports/books_details_sample.json` : echantillon de demonstration, meme
+  schema que le final, 20 fiches avec la commande documentee ;
+- `exports/books_details.json` : resultat final, 1 000 fiches produit attendues.
+
+Le projet utilise toujours `-O` pour produire ces fichiers. Cette option
+remplace l'ancien export et rend les commandes rejouables. Eviter `-o` pour ces
+livrables afin de ne pas risquer d'ajouter des donnees a un fichier existant.
+
+Les exports JSON sont encodes en UTF-8. Les prix restent des chaines JSON afin
+de conserver les valeurs decimales exactes.
+
 Charger un export sample deja produit dans PostgreSQL :
 
 ```bash
@@ -202,7 +219,7 @@ data/raw/                Donnees brutes intermediaires
 data/processed/          Donnees nettoyees intermediaires
 db/                      Script SQL de creation de la base
 docs/                    Documentation du projet
-exports/                 Exports CSV ou JSON
+exports/                 Exports JSON
 compose.yaml             PostgreSQL local
 pyproject.toml           Configuration UV et dependances Python
 scrapy.cfg               Point d'entree Scrapy
@@ -230,6 +247,7 @@ Phase 2 :
 - [13 - Phase 2 - Stockage PostgreSQL](docs/13-phase-2-stockage-postgresql.md)
 - [14 - Phase 2 - Reprise apres interruption](docs/14-phase-2-reprise-apres-interruption.md)
 - [15 - Phase 2 - Script de chargement](docs/15-phase-2-script-chargement.md)
+- [16 - Phase 2 - Exports](docs/16-phase-2-exports.md)
 
 Livrables :
 
@@ -266,6 +284,7 @@ Etat actuel :
 - reprise apres interruption par upsert PostgreSQL ;
 - script de chargement separe ;
 - export J1 `exports/books_list.json` ;
+- export sample `exports/books_details_sample.json` ;
 - pytest et coverage configures ;
 - documentation de lancement local.
 
