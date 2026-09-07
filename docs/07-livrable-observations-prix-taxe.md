@@ -1,4 +1,7 @@
-# Observations prix et taxe
+# 07 - Livrable - Observations prix et taxe
+
+Partie du brief liee : livrable final, note d'observation sur les champs de
+prix et de taxe.
 
 Cette note devra etre completee apres observation de plusieurs fiches produit,
 comme demande dans le brief.

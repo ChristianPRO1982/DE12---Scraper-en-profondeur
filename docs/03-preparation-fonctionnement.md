@@ -1,6 +1,26 @@
-# Fonctionnement prevu
+# 03 - Preparation - Fonctionnement prevu
+
+Partie du brief liee : vue d'ensemble du fonctionnement attendu, phase 1,
+phase 2 et stockage PostgreSQL.
 
 Le projet suivra les deux phases du brief.
+
+## Reconnaissance
+
+La reconnaissance du site est documentee dans
+[05-phase-1-reconnaissance.md](05-phase-1-reconnaissance.md).
+
+Points structurants :
+
+- aucune politique de crawling formalisee identifiee ;
+- `robots.txt` absent, reponse HTTP 404 ;
+- site explicitement presente comme un bac a sable de scraping ;
+- 1 000 livres annonces ;
+- 20 livres par page ;
+- 50 pages de liste ;
+- pagination par lien `next` ;
+- liens produit relatifs ;
+- stock reel et UPC presents uniquement sur les fiches produit.
 
 ## Phase 1
 

@@ -1,4 +1,6 @@
-# Qualite du code
+# 04 - Preparation - Qualite du code
+
+Partie du brief liee : revue de code, lisibilite, tests, qualite des livrables.
 
 Le projet utilise Ruff pour le style et les erreurs simples, Pytest pour les
 tests, et Coverage pour mesurer la couverture.

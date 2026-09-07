@@ -1,4 +1,6 @@
-# Variables d'environnement
+# 02 - Preparation - Variables d'environnement
+
+Partie du brief liee : preparation du socle technique et lancement local.
 
 Le fichier `.env` contient la configuration locale. Il ne doit pas etre commite.
 

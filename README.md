@@ -96,12 +96,21 @@ scrapy.cfg               Point d'entree Scrapy
 
 ## Documentation
 
-- [docs/installation.md](docs/installation.md)
-- [docs/fonctionnement.md](docs/fonctionnement.md)
-- [docs/environnement.md](docs/environnement.md)
-- [docs/qualite.md](docs/qualite.md)
-- [docs/journal-de-bord.md](docs/journal-de-bord.md)
-- [docs/observations-prix-taxe.md](docs/observations-prix-taxe.md)
+Preparation :
+
+- [01 - Preparation - Installation locale](docs/01-preparation-installation.md)
+- [02 - Preparation - Variables d'environnement](docs/02-preparation-environnement.md)
+- [03 - Preparation - Fonctionnement prevu](docs/03-preparation-fonctionnement.md)
+- [04 - Preparation - Qualite du code](docs/04-preparation-qualite.md)
+
+Phase 1 :
+
+- [05 - Phase 1 - Reconnaissance du site](docs/05-phase-1-reconnaissance.md)
+
+Livrables :
+
+- [06 - Livrable - Journal de bord](docs/06-livrable-journal-de-bord.md)
+- [07 - Livrable - Observations prix et taxe](docs/07-livrable-observations-prix-taxe.md)
 
 ## Qualite
 

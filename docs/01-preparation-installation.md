@@ -1,4 +1,6 @@
-# Installation locale
+# 01 - Preparation - Installation locale
+
+Partie du brief liee : preparation du socle technique, installation depuis zero.
 
 Ce projet doit rester simple a lancer sur une machine de developpement standard.
 Il n'utilise pas Node.js et ne demande pas de mise a niveau systeme particuliere.

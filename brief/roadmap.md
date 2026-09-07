@@ -31,23 +31,33 @@ docker compose --env-file .env.example config
 
 ## 2. Reconnaissance du site
 
+Statut : realise.
+
 Avant d'ecrire le scraper de production :
 
-- consulter `https://books.toscrape.com/robots.txt` ;
-- noter ce que le fichier autorise ;
-- observer la pagination du catalogue ;
-- verifier si les URLs de pagination sont previsibles ou suivies via `next` ;
-- compter les pages de liste attendues ;
-- verifier si le site annonce le nombre total de resultats ;
-- observer les liens vers les fiches produit ;
-- noter que les URLs produit sont relatives ;
-- verifier deux ou trois fiches produit ;
-- reperer les champs absents des pages de liste.
+- consulter `https://books.toscrape.com/robots.txt` : fait, reponse HTTP 404 ;
+- repondre a la question du brief sur ce qu'il autorise : aucun `robots.txt`
+  n'est publie, donc aucune directive technique `Disallow` ou `Crawl-delay`
+  n'existe sur ce point ;
+- verifier s'il existe une politique equivalente : aucune politique formalisee
+  identifiee sur Books to Scrape ;
+- noter le contexte officiel : le site indique explicitement etre destine au
+  scraping ;
+- observer la pagination du catalogue : fait ;
+- verifier si les URLs de pagination sont previsibles ou suivies via `next` :
+  lien `next` present, a suivre avec Scrapy ;
+- compter les pages de liste attendues : 50 pages ;
+- verifier si le site annonce le nombre total de resultats : 1 000 resultats ;
+- observer les liens vers les fiches produit : fait ;
+- noter que les URLs produit sont relatives : fait ;
+- verifier deux ou trois fiches produit : fait ;
+- reperer les champs absents des pages de liste : fait.
 
 Documentation a completer :
 
-- `docs/journal-de-bord.md` ;
-- `docs/fonctionnement.md`.
+- `docs/06-livrable-journal-de-bord.md` : complete ;
+- `docs/03-preparation-fonctionnement.md` : complete ;
+- `docs/05-phase-1-reconnaissance.md` : ajoute.
 
 ## 3. Collecteur des pages de liste
 
@@ -266,11 +276,13 @@ HAVING COUNT(*) > 1;
 Mettre a jour :
 
 - `README.md` ;
-- `docs/installation.md` ;
-- `docs/fonctionnement.md` ;
-- `docs/environnement.md` ;
-- `docs/journal-de-bord.md` ;
-- `docs/observations-prix-taxe.md`.
+- `docs/01-preparation-installation.md` ;
+- `docs/02-preparation-environnement.md` ;
+- `docs/03-preparation-fonctionnement.md` ;
+- `docs/04-preparation-qualite.md` ;
+- `docs/05-phase-1-reconnaissance.md` ;
+- `docs/06-livrable-journal-de-bord.md` ;
+- `docs/07-livrable-observations-prix-taxe.md`.
 
 La documentation finale doit expliquer :
 
