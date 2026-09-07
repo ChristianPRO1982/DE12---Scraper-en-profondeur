@@ -1,12 +1,12 @@
 # Scraper en profondeur - Books to Scrape
 
-Projet d'ecole pour apprendre a scraper un catalogue en profondeur avec
+Projet d'école pour apprendre à scraper un catalogue en profondeur avec
 Scrapy, PostgreSQL, Docker et UV.
 
-Le site cible est le bac a sable legal d'entrainement :
+Le site cible est le bac à sable légal d'entraînement :
 <https://books.toscrape.com/>
 
-Depot du projet :
+Dépôt du projet :
 <https://github.com/ChristianPRO1982/DE12---Scraper-en-profondeur>
 
 Auteur : ChristianPRO1982.
@@ -14,14 +14,14 @@ Auteur : ChristianPRO1982.
 ## Objectif
 
 Le projet doit collecter les livres du catalogue, visiter les fiches produit,
-recuperer les informations absentes des pages de liste, puis charger le resultat
+récupérer les informations absentes des pages de liste, puis charger le résultat
 dans PostgreSQL.
 
-Le developpement suivra le brief fourni dans [brief/brief.md](brief/brief.md).
+Le développement suivra le brief fourni dans [brief/brief.md](brief/brief.md).
 
 ## Technologies
 
-- Python gere avec UV
+- Python géré avec UV
 - Scrapy pour le scraping
 - PostgreSQL pour le stockage
 - Docker Compose pour lancer la base en local
@@ -29,9 +29,9 @@ Le developpement suivra le brief fourni dans [brief/brief.md](brief/brief.md).
 
 ## Installation locale
 
-Prerequis attendus :
+Prérequis attendus :
 
-- Python 3.11 ou plus recent
+- Python 3.11 ou plus récent
 - UV
 - Docker avec Docker Compose
 
@@ -41,7 +41,7 @@ Configurer l'environnement :
 cp .env.example .env
 ```
 
-Installer les dependances Python :
+Installer les dépendances Python :
 
 ```bash
 uv sync
@@ -53,13 +53,13 @@ Lancer PostgreSQL :
 docker compose up -d
 ```
 
-Creer les tables :
+Créer les tables :
 
 ```bash
 docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/schema.sql'
 ```
 
-Verifier que le projet Scrapy est visible :
+Vérifier que le projet Scrapy est visible :
 
 ```bash
 uv run scrapy list
@@ -69,7 +69,7 @@ La commande doit lister les spiders `books_list` et `books_details`.
 
 ## Parcours complet rejouable
 
-Sequence courte depuis un projet configure :
+Séquence courte depuis un projet configuré :
 
 ```bash
 docker compose up -d
@@ -89,41 +89,41 @@ uv run python -m books_catalog_scraper.validate_exports --full
 uv run python -m scripts.load_books --input exports/books_details.json
 ```
 
-Pour demontrer la reprise apres interruption sans revisiter les fiches deja
-presentes en base :
+Pour démontrer la reprise après interruption sans revisiter les fiches déjà
+présentes en base :
 
 ```bash
 uv run scrapy crawl books_details -a resume_from_db=true -a max_errors=50 -s POSTGRES_ENABLED=true -O /tmp/books_details_resume.json
 ```
 
-Cette commande lit les `product_url` deja stockees dans PostgreSQL, saute les
-fiches deja collectees et ne programme que les fiches manquantes. Utiliser un
-fichier temporaire evite de remplacer l'export final complet par un export de
+Cette commande lit les `product_url` déjà stockées dans PostgreSQL, saute les
+fiches déjà collectées et ne programme que les fiches manquantes. Utiliser un
+fichier temporaire évite de remplacer l'export final complet par un export de
 reprise partiel.
 
 ## Configuration .env
 
-Le fichier `.env` n'est pas versionne. Il est cree a partir de `.env.example`.
+Le fichier `.env` n'est pas versionné. Il est créé à partir de `.env.example`.
 
 Variables principales :
 
 - `POSTGRES_DB` : nom de la base PostgreSQL locale.
 - `POSTGRES_USER` : utilisateur PostgreSQL.
 - `POSTGRES_PASSWORD` : mot de passe PostgreSQL.
-- `POSTGRES_HOST` : hote utilise par les scripts Python, `localhost` en local.
-- `POSTGRES_PORT` : port expose par Docker, `5432` par defaut.
+- `POSTGRES_HOST` : hôte utilisé par les scripts Python, `localhost` en local.
+- `POSTGRES_PORT` : port exposé par Docker, `5432` par défaut.
 
-Les reglages Scrapy comme le User-Agent et la temporisation sont places dans
+Les réglages Scrapy comme le User-Agent et la temporisation sont placés dans
 `books_catalog_scraper/settings.py`.
 
-Reglages principaux :
+Réglages principaux :
 
 - `ROBOTSTXT_OBEY=True` ;
 - `USER_AGENT` explicite pour identifier le projet ;
 - `DOWNLOAD_DELAY=0.5` ;
 - `RANDOMIZE_DOWNLOAD_DELAY=False` pour garder un rythme rejouable ;
 - `CONCURRENT_REQUESTS_PER_DOMAIN=1` pour limiter la charge et garder un ordre
-  plus previsible.
+  plus prévisible.
 
 ## Commandes Scrapy
 
@@ -139,31 +139,31 @@ Collecter uniquement les pages de liste :
 uv run scrapy crawl books_list -O exports/books_list.json
 ```
 
-Collecter un echantillon rejouable de 20 fiches produit :
+Collecter un échantillon rejouable de 20 fiches produit :
 
 ```bash
 uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json
 ```
 
-Relancer cette commande remplace l'export precedent grace a l'option `-O`.
-Le seuil d'erreurs par defaut est `max_errors=50`.
+Relancer cette commande remplace l'export précédent grâce à l'option `-O`.
+Le seuil d'erreurs par défaut est `max_errors=50`.
 
-Collecter un echantillon avec un seuil d'erreurs explicite :
+Collecter un échantillon avec un seuil d'erreurs explicite :
 
 ```bash
 uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -O exports/books_details_sample.json
 ```
 
-Collecter le meme echantillon et le charger dans PostgreSQL :
+Collecter le même échantillon et le charger dans PostgreSQL :
 
 ```bash
 uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -s POSTGRES_ENABLED=true -O exports/books_details_sample.json
 ```
 
-Relancer exactement la meme commande est autorise : l'export est remplace et les
-livres deja presents en base sont mis a jour par UPC.
+Relancer exactement la même commande est autorisé : l'export est remplacé et les
+livres déjà présents en base sont mis à jour par UPC.
 
-Valider l'echantillon :
+Valider l'échantillon :
 
 ```bash
 uv run python -m books_catalog_scraper.validate_exports --sample
@@ -187,15 +187,15 @@ Collecter toutes les fiches et les charger dans PostgreSQL :
 uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
 ```
 
-Cette commande peut aussi etre relancee apres interruption.
+Cette commande peut aussi être relancée après interruption.
 
-Reprendre une collecte PostgreSQL sans revisiter les fiches deja presentes :
+Reprendre une collecte PostgreSQL sans revisiter les fiches déjà présentes :
 
 ```bash
 uv run scrapy crawl books_details -a resume_from_db=true -a max_errors=50 -s POSTGRES_ENABLED=true -O /tmp/books_details_resume.json
 ```
 
-Cette commande sert a la demonstration de reprise. Elle ecrit seulement les
+Cette commande sert à la démonstration de reprise. Elle écrit seulement les
 fiches restantes dans l'export temporaire.
 
 Valider l'export final :
@@ -206,34 +206,34 @@ uv run python -m books_catalog_scraper.validate_exports --full
 
 ## Exports
 
-Les exports sont separes pour garder des livrables lisibles :
+Les exports sont séparés pour garder des livrables lisibles :
 
 - `exports/books_list.json` : phase 1, 1 000 livres attendus avec titre, prix de
   liste, note et URL produit ;
-- `exports/books_details_sample.json` : echantillon de demonstration, meme
-  schema que le final, 20 fiches avec la commande documentee ;
-- `exports/books_details.json` : resultat final, 1 000 fiches produit attendues.
+- `exports/books_details_sample.json` : échantillon de démonstration, même
+  schéma que le final, 20 fiches avec la commande documentée ;
+- `exports/books_details.json` : résultat final, 1 000 fiches produit attendues.
 
 Le projet utilise toujours `-O` pour produire ces fichiers. Cette option
-remplace l'ancien export et rend les commandes rejouables. Eviter `-o` pour ces
-livrables afin de ne pas risquer d'ajouter des donnees a un fichier existant.
+remplace l'ancien export et rend les commandes rejouables. Éviter `-o` pour ces
+livrables afin de ne pas risquer d'ajouter des données à un fichier existant.
 
-Les exports JSON sont encodes en UTF-8. Les prix restent des chaines JSON afin
-de conserver les valeurs decimales exactes.
+Les exports JSON sont encodés en UTF-8. Les prix restent des chaînes JSON afin
+de conserver les valeurs décimales exactes.
 
-Charger un export sample deja produit dans PostgreSQL :
+Charger un export sample déjà produit dans PostgreSQL :
 
 ```bash
 uv run python -m scripts.load_books --input exports/books_details_sample.json --allow-sample
 ```
 
-Charger l'export final deja produit dans PostgreSQL :
+Charger l'export final déjà produit dans PostgreSQL :
 
 ```bash
 uv run python -m scripts.load_books --input exports/books_details.json
 ```
 
-Sequence recommandee avant le chargement PostgreSQL :
+Séquence recommandée avant le chargement PostgreSQL :
 
 ```bash
 uv run scrapy crawl books_list -O exports/books_list.json
@@ -245,23 +245,23 @@ uv run python -m books_catalog_scraper.validate_exports --full
 uv run python -m scripts.load_books --input exports/books_details.json
 ```
 
-Le validateur `--full` echoue clairement si `exports/books_details.json` n'existe
+Le validateur `--full` échoue clairement si `exports/books_details.json` n'existe
 pas encore ou si l'export final est incomplet.
 
-Verifier l'absence de doublons UPC en base :
+Vérifier l'absence de doublons UPC en base :
 
 ```bash
 docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT COUNT(*) FROM (SELECT upc FROM books GROUP BY upc HAVING COUNT(*) > 1) AS duplicates;"'
 ```
 
-Lancer les requetes SQL de demonstration :
+Lancer les requêtes SQL de démonstration :
 
 ```bash
 docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/demo_queries.sql'
 ```
 
-Ces requetes ne modifient pas la base. Elles affichent le nombre de livres, les
-doublons eventuels, les stocks faibles, les meilleurs livres et des controles
+Ces requêtes ne modifient pas la base. Elles affichent le nombre de livres, les
+doublons éventuels, les stocks faibles, les meilleurs livres et des contrôles
 prix/taxe.
 
 ## Structure
@@ -269,26 +269,26 @@ prix/taxe.
 ```text
 books_catalog_scraper/   Projet Scrapy
 books_catalog_scraper/spiders/
-brief/                   Brief ecole
-data/raw/                Donnees brutes intermediaires
-data/processed/          Donnees nettoyees intermediaires
-db/                      Script SQL de creation de la base
+brief/                   Brief école
+data/raw/                Données brutes intermédiaires
+data/processed/          Données nettoyées intermédiaires
+db/                      Script SQL de création de la base
 docs/                    Documentation du projet
 exports/                 Exports JSON
-quality/                 Resultats de qualite et validation finale
+quality/                 Résultats de qualité et validation finale
 compose.yaml             PostgreSQL local
-pyproject.toml           Configuration UV et dependances Python
-scrapy.cfg               Point d'entree Scrapy
+pyproject.toml           Configuration UV et dépendances Python
+scrapy.cfg               Point d'entrée Scrapy
 ```
 
 ## Documentation
 
-Preparation :
+Préparation :
 
-- [01 - Preparation - Installation locale](docs/01-preparation-installation.md)
-- [02 - Preparation - Variables d'environnement](docs/02-preparation-environnement.md)
-- [03 - Preparation - Fonctionnement prevu](docs/03-preparation-fonctionnement.md)
-- [04 - Preparation - Qualite du code](docs/04-preparation-qualite.md)
+- [01 - Préparation - Installation locale](docs/01-preparation-installation.md)
+- [02 - Préparation - Variables d'environnement](docs/02-preparation-environnement.md)
+- [03 - Préparation - Fonctionnement prévu](docs/03-preparation-fonctionnement.md)
+- [04 - Préparation - Qualité du code](docs/04-preparation-qualite.md)
 
 Phase 1 :
 
@@ -301,7 +301,7 @@ Phase 2 :
 - [08 - Phase 2 - Temporisation et User-Agent](docs/08-phase-2-temporisation-user-agent.md)
 - [12 - Phase 2 - Gestion des erreurs](docs/12-phase-2-gestion-erreurs.md)
 - [13 - Phase 2 - Stockage PostgreSQL](docs/13-phase-2-stockage-postgresql.md)
-- [14 - Phase 2 - Reprise apres interruption](docs/14-phase-2-reprise-apres-interruption.md)
+- [14 - Phase 2 - Reprise après interruption](docs/14-phase-2-reprise-apres-interruption.md)
 - [15 - Phase 2 - Script de chargement](docs/15-phase-2-script-chargement.md)
 - [16 - Phase 2 - Exports](docs/16-phase-2-exports.md)
 
@@ -310,15 +310,15 @@ Livrables :
 - [09 - Livrable - Journal de bord](docs/09-livrable-journal-de-bord.md)
 - [10 - Livrable - Observations prix et taxe](docs/10-livrable-observations-prix-taxe.md)
 - [11 - Correction - Validation des exports](docs/11-correction-validation-exports.md)
-- [17 - Livrable - Requetes de demonstration](docs/17-livrable-requetes-demonstration.md)
+- [17 - Livrable - Requêtes de démonstration](docs/17-livrable-requetes-demonstration.md)
 - [18 - Livrable - Documentation finale](docs/18-livrable-documentation-finale.md)
 - [19 - Livrable - Validation finale](docs/19-livrable-validation-finale.md)
 - [20 - Livrable - Principes de code](docs/20-livrable-principes-code.md)
-- [Resultats qualite et validation](quality/result.md)
+- [Résultats qualité et validation](quality/result.md)
 
-## Qualite
+## Qualité
 
-Commandes de controle :
+Commandes de contrôle :
 
 ```bash
 uv run ruff check . && uv run ruff format --check . && uv run pytest -q
@@ -326,36 +326,36 @@ uv run coverage run -m pytest && uv run coverage report -m
 uv run ruff format .
 ```
 
-La couverture de tests attendue est configuree a 100%.
+La couverture de tests attendue est configurée à 100%.
 
-Les resultats detailles de validation sont consignes dans
+Les résultats détaillés de validation sont consignés dans
 [quality/result.md](quality/result.md).
 
-## Etat actuel
+## État actuel
 
-Etat actuel :
+État actuel :
 
 - configuration UV ;
 - configuration Docker Compose PostgreSQL ;
-- script SQL de creation de la base ;
+- script SQL de création de la base ;
 - collecteur Scrapy des pages de liste ;
 - collecteur Scrapy des fiches produit ;
-- mode echantillon avec `books_details -a limit=20` ;
-- temporisation et User-Agent configures ;
+- mode échantillon avec `books_details -a limit=20` ;
+- temporisation et User-Agent configurés ;
 - gestion d'erreurs avec seuil `max_errors` ;
 - validateur d'exports JSON ;
 - pipeline optionnel de stockage PostgreSQL ;
-- reprise apres interruption par upsert PostgreSQL ;
-- script de chargement separe ;
-- requetes SQL de demonstration ;
+- reprise après interruption par upsert PostgreSQL ;
+- script de chargement séparé ;
+- requêtes SQL de démonstration ;
 - documentation finale ;
-- principes de code documentes ;
+- principes de code documentés ;
 - export J1 `exports/books_list.json` ;
 - export sample `exports/books_details_sample.json` ;
 - export final `exports/books_details.json` ;
-- chargement complet des 1 000 livres valide dans PostgreSQL ;
-- pytest et coverage configures ;
+- chargement complet des 1 000 livres validé dans PostgreSQL ;
+- pytest et coverage configurés ;
 - documentation de lancement local.
 
-Le full scrape final a ete valide avec 1 000 fiches exportees et 1 000 livres
-charges dans PostgreSQL.
+Le full scrape final a été validé avec 1 000 fiches exportées et 1 000 livres
+chargés dans PostgreSQL.

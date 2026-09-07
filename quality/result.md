@@ -1,14 +1,14 @@
-# Resultats de qualite et de validation
+# Résultats de qualité et de validation
 
-Date de controle : 2026-09-07.
+Date de contrôle : 2026-09-07.
 
-Ce fichier regroupe les preuves de bon fonctionnement liees aux livrables du
-brief : exports, PostgreSQL, reprise, requetes de demonstration, tests et
+Ce fichier regroupe les preuves de bon fonctionnement liées aux livrables du
+brief : exports, PostgreSQL, reprise, requêtes de démonstration, tests et
 couverture.
 
-## 0. Environnement de controle
+## 0. Environnement de contrôle
 
-Versions relevees :
+Versions relevées :
 
 ```text
 uv 0.9.21
@@ -17,21 +17,21 @@ Docker Compose version v2.35.1
 ```
 
 Remarque : la commande `python` seule n'est pas disponible dans cet
-environnement. Le projet utilise donc bien `uv run python`, comme documente dans
+environnement. Le projet utilise donc bien `uv run python`, comme documenté dans
 le README.
 
-Commande du full scrape valide :
+Commande du full scrape validé :
 
 ```bash
 uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
 ```
 
-Cette commande a produit l'export final et charge les donnees dans PostgreSQL.
-Elle reste rejouable grace a `-O` pour l'export et a l'upsert PostgreSQL.
+Cette commande a produit l'export final et chargé les données dans PostgreSQL.
+Elle reste rejouable grâce à `-O` pour l'export et à l'upsert PostgreSQL.
 
 ## 1. Exports JSON
 
-Fichiers presents dans `exports/` :
+Fichiers présents dans `exports/` :
 
 ```text
 .gitkeep 1 bytes
@@ -40,7 +40,7 @@ books_details_sample.json 40423 bytes
 books_list.json 198240 bytes
 ```
 
-Roles des fichiers :
+Rôles des fichiers :
 
 - `books_list.json` : export de phase 1, 1 000 livres.
 - `books_details_sample.json` : export sample, 20 fiches.
@@ -54,7 +54,7 @@ Commande :
 uv run python -m books_catalog_scraper.validate_exports --sample
 ```
 
-Resultat :
+Résultat :
 
 ```text
 livres Phase 1 : 1000
@@ -82,7 +82,7 @@ Commande :
 uv run python -m books_catalog_scraper.validate_exports --full
 ```
 
-Resultat :
+Résultat :
 
 ```text
 livres Phase 1 : 1000
@@ -104,18 +104,18 @@ differences prix observees : 0
 erreurs : 0
 ```
 
-Conclusion : les exports attendus par le brief sont presents et valides. Les 2
-descriptions absentes sont acceptees par le contrat de donnees, car
+Conclusion : les exports attendus par le brief sont présents et validés. Les 2
+descriptions absentes sont acceptées par le contrat de données, car
 `description` peut valoir `null`.
 
 ## 2. PostgreSQL
 
-### Tables controlees
+### Tables contrôlées
 
-Le brief demande les 1 000 livres en base PostgreSQL avec UPC, stock reel, note
-numerique, nombre d'avis et categorie.
+Le brief demande les 1 000 livres en base PostgreSQL avec UPC, stock réel, note
+numérique, nombre d'avis et catégorie.
 
-Commandes de controle :
+Commandes de contrôle :
 
 ```sql
 SELECT COUNT(*) FROM books;
@@ -123,12 +123,12 @@ SELECT COUNT(DISTINCT upc) FROM books;
 SELECT COUNT(*) FROM categories;
 ```
 
-Resultats :
+Résultats :
 
 ```text
 books total          : 1000
 UPC distincts        : 1000
-categories           : 50
+catégories           : 50
 ```
 
 ### Absence de doublons
@@ -155,16 +155,16 @@ FROM (
 ) AS duplicates;
 ```
 
-Resultats :
+Résultats :
 
 ```text
 doublons UPC         : 0
 doublons URL produit : 0
 ```
 
-### Categories
+### Catégories
 
-Extrait de controle :
+Extrait de contrôle :
 
 ```sql
 SELECT id, name
@@ -173,7 +173,7 @@ ORDER BY name
 LIMIT 10;
 ```
 
-Resultat :
+Résultat :
 
 ```text
 id,name
@@ -189,12 +189,12 @@ id,name
 183,Christian Fiction
 ```
 
-Il y a bien 50 categories en base. Les valeurs sont conservees telles que
-publiees par Books to Scrape, y compris `Default` et `Add a comment`.
+Il y a bien 50 catégories en base. Les valeurs sont conservées telles que
+publiées par Books to Scrape, y compris `Default` et `Add a comment`.
 
 ### Exemple de livre
 
-Extrait de controle :
+Extrait de contrôle :
 
 ```sql
 SELECT upc, title, category_id, rating, stock_quantity, review_count
@@ -203,17 +203,17 @@ ORDER BY title
 LIMIT 1;
 ```
 
-Resultat :
+Résultat :
 
 ```text
 upc,title,category_id,rating,stock_quantity,review_count
 f16c2edb2a603f92,"Most Blessed of the Patriarchs": Thomas Jefferson and the Empire of the Imagination,25,5,8,0
 ```
 
-Les champs demandes par le brief sont presents : UPC, titre, categorie, note,
-stock reel et nombre d'avis.
+Les champs demandés par le brief sont présents : UPC, titre, catégorie, note,
+stock réel et nombre d'avis.
 
-## 3. Requetes de demonstration
+## 3. Requêtes de démonstration
 
 Commande :
 
@@ -221,51 +221,51 @@ Commande :
 docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/demo_queries.sql'
 ```
 
-Synthese des resultats :
+Synthèse des résultats :
 
 ```text
-Nombre total de livres charges : 1000
+Nombre total de livres chargés : 1000
 Doublons UPC                   : 0 ligne
 Doublons URL produit           : 0 ligne
 Livres en stock faible         : 420
 Livres notes 4 ou 5            : 375
-Categories                     : 50
+Catégories                     : 50
 ```
 
-Controle prix et taxe :
+Contrôle prix et taxe :
 
 ```text
 price_list = price_excl_tax      : 1000
 price_excl_tax = price_incl_tax  : 1000
 tax = 0                          : 1000
-differences prix/taxe observees  : 0
+différences prix/taxe observées  : 0
 ```
 
-Conclusion : les requetes permettent de repondre a la question centrale du
+Conclusion : les requêtes permettent de répondre à la question centrale du
 brief, notamment les titres en stock faible et les titres les mieux notes.
 
-## 4. Reprise apres interruption
+## 4. Reprise après interruption
 
-Commande de demonstration :
+Commande de démonstration :
 
 ```bash
 uv run scrapy crawl books_details -a resume_from_db=true -a max_errors=50 -s POSTGRES_ENABLED=true -O /tmp/books_details_resume.json
 ```
 
-Resultat observe avec une base deja complete :
+Résultat observé avec une base déjà complète :
 
 ```text
-Reprise PostgreSQL active: 1000 fiches deja presentes
+Reprise PostgreSQL active: 1000 fiches déjà présentes
 Collecte des listes terminee: 50 pages parcourues, 0 fiches programmees, 1000 deja presentes ignorees, 0 cartes ignorees, 0 doublons URL ignores
 0 livres sauvegardes dans PostgreSQL
 Collecte des fiches terminee: 0 livres exportes, 0 echecs, raison=finished
 ```
 
-Conclusion : le mode reprise ne revisite pas les fiches produit deja presentes
+Conclusion : le mode reprise ne revisite pas les fiches produit déjà présentes
 en base. Il parcourt seulement les pages de liste pour retrouver les URLs
 produit, puis programme les fiches manquantes.
 
-## 5. Qualite Python
+## 5. Qualité Python
 
 Commandes habituelles :
 
@@ -274,14 +274,14 @@ uv run ruff check . && uv run ruff format --check . && uv run pytest -q
 uv run coverage run -m pytest && uv run coverage report -m
 ```
 
-Resultat Pytest :
+Résultat Pytest :
 
 ```text
 collected 89 items
 89 passed in 0.78s
 ```
 
-Resultat Coverage :
+Résultat Coverage :
 
 ```text
 Name                                             Stmts   Miss Branch BrPart  Cover  Missing
@@ -327,39 +327,39 @@ e31eb03 feat: add demonstration SQL queries and update documentation
 Conclusion : le projet dispose d'un historique de commits exploitable pour le
 brief.
 
-Statut Git au moment de la redaction de ce rapport :
+Statut Git au moment de la rédaction de ce rapport :
 
 ```text
 HEAD : 96cd6d2
 git status --short : ?? quality/
 ```
 
-Le dossier `quality/` est nouveau et doit etre ajoute au prochain commit.
+Le dossier `quality/` est nouveau et doit être ajouté au prochain commit.
 
-## 7. Correspondance avec les criteres du brief
+## 7. Correspondance avec les critères du brief
 
-| Critere du brief | Preuve |
+| Critère du brief | Preuve |
 | --- | --- |
-| 1 000 livres collectes | `validate_exports --full` : `fiches detaillees : 1000` |
+| 1 000 livres collectés | `validate_exports --full` : `fiches detaillees : 1000` |
 | 1 000 livres en PostgreSQL | `SELECT COUNT(*) FROM books;` : `1000` |
-| UPC recupere | `COUNT(DISTINCT upc)` : `1000` |
-| Stock reel recupere | champ `stock_quantity`, vue `books_stock_alerts` |
-| Note numerique | validateur : `ratings invalides : 0` |
+| UPC récupéré | `COUNT(DISTINCT upc)` : `1000` |
+| Stock réel récupéré | champ `stock_quantity`, vue `books_stock_alerts` |
+| Note numérique | validateur : `ratings invalides : 0` |
 | Nombre d'avis | champ `review_count`, validateur : `reviews invalides : 0` |
-| Categories | `SELECT COUNT(*) FROM categories;` : `50` |
+| Catégories | `SELECT COUNT(*) FROM categories;` : `50` |
 | Pas de doublons | doublons UPC : `0`, doublons URL : `0` |
-| Mode echantillon | sample valide : `fiches detaillees : 20` |
-| Reprise apres interruption | `resume_from_db=true` : `0 fiches programmees`, `1000 deja presentes ignorees` |
-| User-Agent explicite | documente dans `docs/08-phase-2-temporisation-user-agent.md` |
-| Temporisation justifiee | documentee dans `docs/08-phase-2-temporisation-user-agent.md` |
-| Script de creation BDD | `db/schema.sql` |
+| Mode échantillon | sample validé : `fiches détaillées : 20` |
+| Reprise après interruption | `resume_from_db=true` : `0 fiches programmees`, `1000 deja presentes ignorees` |
+| User-Agent explicite | documenté dans `docs/08-phase-2-temporisation-user-agent.md` |
+| Temporisation justifiée | documentée dans `docs/08-phase-2-temporisation-user-agent.md` |
+| Script de création BDD | `db/schema.sql` |
 | Script de chargement | `scripts/load_books.py` |
-| Requetes de demonstration | `db/demo_queries.sql` |
+| Requêtes de démonstration | `db/demo_queries.sql` |
 | Journal de bord | `docs/09-livrable-journal-de-bord.md` |
 | Note prix/taxe | `docs/10-livrable-observations-prix-taxe.md` |
-| Qualite | Ruff OK, `89 passed`, Coverage `100%` |
+| Qualité | Ruff OK, `89 passed`, Coverage `100%` |
 
-## 8. Conclusion generale
+## 8. Conclusion générale
 
 Les livrables du brief sont couverts :
 
@@ -369,12 +369,12 @@ Les livrables du brief sont couverts :
 - collecteur de fiches produit ;
 - mode sample ;
 - exports JSON dans le repo ;
-- script SQL de creation de base ;
+- script SQL de création de base ;
 - script de chargement PostgreSQL ;
-- 1 000 livres charges en base ;
-- reprise apres interruption demontrable ;
-- User-Agent et temporisation justifies ;
+- 1 000 livres chargés en base ;
+- reprise après interruption démontrable ;
+- User-Agent et temporisation justifiés ;
 - journal de bord ;
 - note prix/taxe ;
-- requetes SQL de demonstration ;
+- requêtes SQL de démonstration ;
 - tests, Ruff et Coverage OK.
