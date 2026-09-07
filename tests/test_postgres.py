@@ -28,6 +28,7 @@ def detail_item() -> dict:
 class FakeCursor:
     def __init__(self) -> None:
         self.executed_queries = []
+        self.rows = [("https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",)]
 
     def __enter__(self):
         return self
@@ -35,11 +36,14 @@ class FakeCursor:
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         return None
 
-    def execute(self, query: str, params: object) -> None:
+    def execute(self, query: str, params: object | None = None) -> None:
         self.executed_queries.append((query, params))
 
     def fetchone(self) -> tuple[int]:
         return (42,)
+
+    def fetchall(self) -> list[tuple[str]]:
+        return self.rows
 
 
 class FakeConnection:
@@ -188,3 +192,14 @@ def test_upsert_book_inserts_category_then_book() -> None:
     assert "ON CONFLICT (upc) DO UPDATE" in book_query
     assert book_params["category_id"] == 42
     assert book_params["upc"] == "a897fe39b1053632"
+
+
+def test_fetch_existing_product_urls_reads_books_table() -> None:
+    connection = FakeConnection()
+
+    urls = postgres.fetch_existing_product_urls(connection)
+
+    query, params = connection.cursor_instance.executed_queries[0]
+    assert query == "SELECT product_url FROM books;"
+    assert params is None
+    assert urls == {"https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"}

@@ -111,4 +111,4 @@ Etat actuel du projet :
 
 - `exports/books_list.json` existe et correspond a l'export de phase 1 ;
 - `exports/books_details_sample.json` existe et sert de sample rejouable ;
-- `exports/books_details.json` reste a produire lors du full scrape final.
+- `exports/books_details.json` existe et correspond au full scrape final.

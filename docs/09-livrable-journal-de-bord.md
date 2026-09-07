@@ -152,11 +152,15 @@ Reprise apres interruption realisee le 2026-09-07.
 - La reprise repose sur `books.upc` et `ON CONFLICT (upc) DO UPDATE`.
 - Chaque item sauvegarde est committe immediatement.
 - Relancer la meme commande ne cree pas de doublons.
-- Le crawler reparcourt les pages depuis le debut, ce qui reste acceptable pour
-  le brief.
+- Le mode `resume_from_db=true` saute les fiches produit deja presentes en base.
+- Le crawler reparcourt les pages de liste pour retrouver les URLs produit, mais
+  ne reprogramme pas les fiches deja stockees.
 - Les commandes de demonstration et de verification SQL sont documentees.
 - Validation PostgreSQL reelle : apres relance de `limit=3`, la base contient 3
   livres, 0 doublon UPC et 0 doublon URL produit.
+- Validation finale de reprise : avec 1 000 livres deja presents en base,
+  `resume_from_db=true` parcourt 50 pages de liste, programme 0 fiche produit et
+  ignore 1 000 fiches deja collectees.
 
 ### Chargement PostgreSQL
 
@@ -205,8 +209,8 @@ Exports documentes le 2026-09-07.
   livrable final.
 - Validation locale : le validateur `--sample` controle l'export de liste et le
   sample detaille.
-- Le full scrape et la validation `--full` restent a lancer pour produire le
-  livrable final complet.
+- Le sample a ete regenere avec 20 fiches.
+- Le full scrape et la validation `--full` ont produit le livrable final complet.
 
 ### Requetes de demonstration
 

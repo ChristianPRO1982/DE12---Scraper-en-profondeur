@@ -70,6 +70,16 @@ uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O e
 
 La base reste rejouable grace a `ON CONFLICT (upc) DO UPDATE`.
 
+Reprise apres interruption sans revisiter les fiches deja presentes :
+
+```bash
+uv run scrapy crawl books_details -a resume_from_db=true -a max_errors=50 -s POSTGRES_ENABLED=true -O /tmp/books_details_resume.json
+```
+
+Cette commande sert a la demonstration de reprise. Elle saute les fiches deja
+stockees en base et ecrit seulement les fiches restantes dans un export
+temporaire.
+
 ## Verification PostgreSQL
 
 Requetes de demonstration :
@@ -95,6 +105,7 @@ La couverture attendue est `100%`.
 ## Correspondance avec le brief
 
 - Installation depuis zero : `README.md` et `docs/01-preparation-installation.md`.
+- Auteur : `README.md`.
 - Variables `.env` : `docs/02-preparation-environnement.md`.
 - Fonctionnement global : `docs/03-preparation-fonctionnement.md`.
 - Qualite : `docs/04-preparation-qualite.md`.

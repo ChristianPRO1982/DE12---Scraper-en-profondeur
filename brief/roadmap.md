@@ -377,18 +377,23 @@ Resultat obtenu :
 - reprise basee sur l'upsert PostgreSQL ;
 - `books.upc` utilise comme cle primaire ;
 - `commit` apres chaque item ;
-- relance de la meme commande sans duplication ;
+- relance sans duplication ;
+- mode `resume_from_db=true` pour lire les URLs deja presentes en base et eviter
+  de revisiter les fiches produit collectees ;
 - verification SQL des doublons UPC documentee ;
 - validation PostgreSQL reelle apres relance : 3 livres, 0 doublon UPC, 0
   doublon URL produit ;
-- limite assumee : le crawler reparcourt les pages depuis le debut, mais les
-  lignes deja presentes sont mises a jour.
+- validation finale de reprise : 1 000 fiches deja presentes detectees, 50 pages
+  de liste parcourues, 0 fiche produit programmee, 1 000 fiches ignorees ;
+- limite assumee : le crawler reparcourt les pages de liste, mais les fiches
+  produit deja presentes ne sont pas reprogrammees avec `resume_from_db=true`.
 
 Commandes rejouables :
 
 ```bash
 uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -s POSTGRES_ENABLED=true -O exports/books_details_sample.json
 uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
+uv run scrapy crawl books_details -a resume_from_db=true -a max_errors=50 -s POSTGRES_ENABLED=true -O /tmp/books_details_resume.json
 ```
 
 Documentation :
@@ -465,8 +470,8 @@ Resultat obtenu :
 - relancer une commande remplace le fichier cible ;
 - le sample garde le meme schema que le final ;
 - `books_list.json` est valide avec 1 000 livres attendus ;
-- `books_details_sample.json` est valide sans exiger 1 000 fiches ;
-- `books_details.json` est reserve au full scrape final ;
+- `books_details_sample.json` est valide avec 20 fiches ;
+- `books_details.json` existe avec 1 000 fiches ;
 - le validateur `--full` controle les 1 000 fiches, les UPC uniques et la
   coherence avec l'export de liste.
 
@@ -547,7 +552,9 @@ Documentation :
 
 ## 13. Documentation finale
 
-Mettre a jour :
+Statut : realise.
+
+Documentation mise a jour :
 
 - `README.md` ;
 - `docs/01-preparation-installation.md` ;
@@ -566,9 +573,12 @@ Mettre a jour :
 - `docs/14-phase-2-reprise-apres-interruption.md` ;
 - `docs/15-phase-2-script-chargement.md` ;
 - `docs/16-phase-2-exports.md` ;
-- `docs/17-livrable-requetes-demonstration.md`.
+- `docs/17-livrable-requetes-demonstration.md` ;
+- `docs/18-livrable-documentation-finale.md` ;
+- `docs/19-livrable-validation-finale.md` ;
+- `docs/20-livrable-principes-code.md`.
 
-La documentation finale doit expliquer :
+La documentation finale explique :
 
 - installation depuis zero ;
 - lancement de PostgreSQL ;
@@ -580,6 +590,15 @@ La documentation finale doit expliquer :
 - requetes SQL de demonstration ;
 - choix de l'UPC comme cle ;
 - justification du User-Agent et de la temporisation.
+
+Resultat obtenu :
+
+- README utilisable comme point d'entree ;
+- auteur indique dans le README ;
+- documentation numerotee dans `docs/` ;
+- page de synthese finale ajoutee ;
+- commandes rejouables documentees pour le sample, le full scrape et la reprise ;
+- sequence qualite documentee avec Ruff, Pytest et Coverage.
 
 ## 14. Validation finale
 
@@ -648,6 +667,7 @@ Resultat obtenu :
 - SQL PostgreSQL explicite, sans ORM ;
 - schema SQL idempotent dans `db/schema.sql` ;
 - chargement rejouable par upsert sur `books.upc` ;
+- reprise depuis PostgreSQL avec `resume_from_db=true` ;
 - validation des exports independante du scraping ;
 - tests maintenus avec couverture 100%.
 

@@ -9,6 +9,8 @@ Le site cible est le bac a sable legal d'entrainement :
 Depot du projet :
 <https://github.com/ChristianPRO1982/DE12---Scraper-en-profondeur>
 
+Auteur : ChristianPRO1982.
+
 ## Objectif
 
 Le projet doit collecter les livres du catalogue, visiter les fiches produit,
@@ -86,6 +88,18 @@ uv run scrapy crawl books_details -a max_errors=50 -O exports/books_details.json
 uv run python -m books_catalog_scraper.validate_exports --full
 uv run python -m scripts.load_books --input exports/books_details.json
 ```
+
+Pour demontrer la reprise apres interruption sans revisiter les fiches deja
+presentes en base :
+
+```bash
+uv run scrapy crawl books_details -a resume_from_db=true -a max_errors=50 -s POSTGRES_ENABLED=true -O /tmp/books_details_resume.json
+```
+
+Cette commande lit les `product_url` deja stockees dans PostgreSQL, saute les
+fiches deja collectees et ne programme que les fiches manquantes. Utiliser un
+fichier temporaire evite de remplacer l'export final complet par un export de
+reprise partiel.
 
 ## Configuration .env
 
@@ -174,6 +188,15 @@ uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O e
 ```
 
 Cette commande peut aussi etre relancee apres interruption.
+
+Reprendre une collecte PostgreSQL sans revisiter les fiches deja presentes :
+
+```bash
+uv run scrapy crawl books_details -a resume_from_db=true -a max_errors=50 -s POSTGRES_ENABLED=true -O /tmp/books_details_resume.json
+```
+
+Cette commande sert a la demonstration de reprise. Elle ecrit seulement les
+fiches restantes dans l'export temporaire.
 
 Valider l'export final :
 

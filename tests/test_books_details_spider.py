@@ -6,6 +6,7 @@ from scrapy.http import HtmlResponse
 
 from books_catalog_scraper.spiders.books_details import (
     BooksDetailsSpider,
+    parse_bool,
     parse_limit,
     required_field,
     required_text,
@@ -238,6 +239,58 @@ def test_parse_list_page_ignores_duplicate_product_url() -> None:
     assert spider.duplicate_product_urls == 1
 
 
+def test_parse_list_page_skips_existing_product_url_when_resume_is_enabled() -> None:
+    response = make_response(list_page_html(), url="https://books.toscrape.com/")
+    spider = BooksDetailsSpider(resume_from_db=True)
+    spider.existing_product_urls = {
+        "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+    }
+    spider.existing_product_urls_loaded = True
+
+    results = list(spider.parse(response))
+
+    assert len(results) == 1
+    assert results[0].url == "https://books.toscrape.com/catalogue/page-2.html"
+    assert spider.product_requests == 0
+    assert spider.skipped_existing_products == 1
+
+
+def test_load_existing_product_urls_once(monkeypatch) -> None:
+    calls = []
+
+    class FakeConnection:
+        def __enter__(self):
+            calls.append("open")
+            return self
+
+        def __exit__(self, exc_type, exc_value, traceback) -> None:
+            calls.append("close")
+
+    def fake_connect_postgres() -> FakeConnection:
+        return FakeConnection()
+
+    def fake_fetch_existing_product_urls(connection: FakeConnection) -> set[str]:
+        assert isinstance(connection, FakeConnection)
+        calls.append("fetch")
+        return {"https://books.toscrape.com/catalogue/book/index.html"}
+
+    monkeypatch.setattr(
+        "books_catalog_scraper.spiders.books_details.connect_postgres",
+        fake_connect_postgres,
+    )
+    monkeypatch.setattr(
+        "books_catalog_scraper.spiders.books_details.fetch_existing_product_urls",
+        fake_fetch_existing_product_urls,
+    )
+    spider = BooksDetailsSpider(resume_from_db=True)
+
+    spider.load_existing_product_urls_once()
+    spider.load_existing_product_urls_once()
+
+    assert calls == ["open", "fetch", "close"]
+    assert spider.existing_product_urls == {"https://books.toscrape.com/catalogue/book/index.html"}
+
+
 def test_parse_list_page_ignores_invalid_product_card() -> None:
     response = make_response(
         """
@@ -329,5 +382,29 @@ def test_parse_limit_rejects_non_positive_value() -> None:
         parse_limit("0")
     except ValueError as error:
         assert "entier positif" in str(error)
+    else:
+        raise AssertionError("ValueError attendu")
+
+
+def test_parse_bool_accepts_common_values() -> None:
+    assert parse_bool(None) is False
+    assert parse_bool("") is False
+    assert parse_bool(True) is True
+    assert parse_bool(False) is False
+    assert parse_bool("true") is True
+    assert parse_bool("1") is True
+    assert parse_bool("yes") is True
+    assert parse_bool("on") is True
+    assert parse_bool("false") is False
+    assert parse_bool("0") is False
+    assert parse_bool("no") is False
+    assert parse_bool("off") is False
+
+
+def test_parse_bool_rejects_invalid_value() -> None:
+    try:
+        parse_bool("maybe")
+    except ValueError as error:
+        assert "resume_from_db" in str(error)
     else:
         raise AssertionError("ValueError attendu")

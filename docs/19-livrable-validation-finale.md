@@ -126,6 +126,22 @@ Resultat : `0`.
 Le script `scripts.load_books` a ete relance sur `exports/books_details.json` et
 a recharge 1 000 livres par upsert sans creer de doublons.
 
+## Resultat reprise
+
+Commande executee avec la base deja complete :
+
+```bash
+uv run scrapy crawl books_details -a resume_from_db=true -a max_errors=50 -s POSTGRES_ENABLED=true -O /tmp/books_details_resume.json
+```
+
+Resultat :
+
+- 1 000 fiches deja presentes detectees dans PostgreSQL ;
+- 50 pages de liste parcourues ;
+- 0 fiche produit programmee ;
+- 1 000 fiches deja presentes ignorees ;
+- 0 echec.
+
 ## Rejouabilite
 
 Les commandes restent rejouables :
@@ -135,6 +151,8 @@ Les commandes restent rejouables :
 - Scrapy ecrit les exports avec `-O`, donc le fichier cible est remplace ;
 - PostgreSQL utilise `ON CONFLICT (upc) DO UPDATE` ;
 - le script de chargement reutilise les memes upserts que le pipeline.
+- le mode `resume_from_db=true` saute les fiches produit deja presentes en base
+  pour une reprise apres interruption.
 
 ## Qualite
 

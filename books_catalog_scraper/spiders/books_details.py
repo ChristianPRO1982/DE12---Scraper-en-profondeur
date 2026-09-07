@@ -13,6 +13,7 @@ from books_catalog_scraper.parsers import (
     parse_rating,
     parse_stock,
 )
+from books_catalog_scraper.postgres import connect_postgres, fetch_existing_product_urls
 
 
 class BooksDetailsSpider(scrapy.Spider):
@@ -28,20 +29,26 @@ class BooksDetailsSpider(scrapy.Spider):
         self,
         limit: str | int | None = None,
         max_errors: str | int | None = None,
+        resume_from_db: str | bool | None = None,
         *args: object,
         **kwargs: object,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.limit = parse_limit(limit)
         self.max_errors = parse_max_errors(max_errors)
+        self.resume_from_db = parse_bool(resume_from_db)
         self.pages_seen = 0
         self.product_urls_seen: set[str] = set()
+        self.existing_product_urls: set[str] = set()
+        self.existing_product_urls_loaded = False
         self.product_requests = 0
         self.books_exported = 0
         self.failed_products = 0
         self.duplicate_product_urls = 0
+        self.skipped_existing_products = 0
 
     def parse(self, response: scrapy.http.Response) -> Iterator[Request]:
+        self.load_existing_product_urls_once()
         self.pages_seen += 1
 
         products = response.css("article.product_pod")
@@ -69,6 +76,11 @@ class BooksDetailsSpider(scrapy.Spider):
                 continue
 
             self.product_urls_seen.add(product_url)
+            if product_url in self.existing_product_urls:
+                self.skipped_existing_products += 1
+                self.logger.debug("Fiche deja presente en base ignoree: %s", product_url)
+                continue
+
             self.product_requests += 1
             yield response.follow(
                 product_url,
@@ -83,10 +95,12 @@ class BooksDetailsSpider(scrapy.Spider):
             self.logger.info(
                 (
                     "Collecte des listes terminee: %s pages parcourues, "
-                    "%s fiches programmees, %s cartes ignorees, %s doublons URL ignores"
+                    "%s fiches programmees, %s deja presentes ignorees, "
+                    "%s cartes ignorees, %s doublons URL ignores"
                 ),
                 self.pages_seen,
                 self.product_requests,
+                self.skipped_existing_products,
                 self.failed_products,
                 self.duplicate_product_urls,
             )
@@ -174,6 +188,19 @@ class BooksDetailsSpider(scrapy.Spider):
     def has_reached_limit(self) -> bool:
         return self.limit is not None and self.product_requests >= self.limit
 
+    def load_existing_product_urls_once(self) -> None:
+        if not self.resume_from_db or self.existing_product_urls_loaded:
+            return
+
+        with connect_postgres() as connection:
+            self.existing_product_urls = fetch_existing_product_urls(connection)
+
+        self.existing_product_urls_loaded = True
+        self.logger.info(
+            "Reprise PostgreSQL active: %s fiches deja presentes",
+            len(self.existing_product_urls),
+        )
+
     def record_failure(self) -> None:
         self.failed_products += 1
         if has_exceeded_error_limit(self.failed_products, self.max_errors):
@@ -205,3 +232,18 @@ def parse_limit(value: str | int | None) -> int | None:
         raise ValueError("Le parametre limit doit etre un entier positif")
 
     return limit
+
+
+def parse_bool(value: str | bool | None) -> bool:
+    if value in {None, ""}:
+        return False
+    if isinstance(value, bool):
+        return value
+
+    normalized_value = value.strip().lower()
+    if normalized_value in {"1", "true", "yes", "y", "on"}:
+        return True
+    if normalized_value in {"0", "false", "no", "n", "off"}:
+        return False
+
+    raise ValueError("Le parametre resume_from_db doit etre un booleen")

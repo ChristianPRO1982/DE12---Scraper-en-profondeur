@@ -59,6 +59,8 @@ Le code garde les executions rejouables :
 - les exports Scrapy utilisent `-O` pour remplacer le fichier cible ;
 - `db/schema.sql` est idempotent ;
 - PostgreSQL utilise `ON CONFLICT (upc) DO UPDATE` ;
+- le mode `resume_from_db=true` evite de revisiter les fiches deja presentes en
+  base ;
 - le script `scripts.load_books` reutilise les memes upserts que le pipeline ;
 - les validations peuvent etre relancees sans modifier les donnees.
 
@@ -72,6 +74,7 @@ tests unitaires :
 - extraction du stock ;
 - extraction des fiches ;
 - seuil d'erreurs ;
+- reprise depuis PostgreSQL ;
 - validation des exports ;
 - chargement PostgreSQL ;
 - pipeline Scrapy.
@@ -85,11 +88,11 @@ uv run ruff check . && uv run ruff format --check . && uv run pytest -q
 uv run coverage run -m pytest && uv run coverage report -m
 ```
 
-## Limites assumees
+## Limite assumee
 
-La reprise apres interruption reparcourt les pages depuis le debut. Ce choix est
-volontaire pour garder le code simple. L'absence de doublons reste garantie par
-l'upsert PostgreSQL sur `books.upc`.
+La reprise apres interruption reparcourt les pages de liste depuis le debut pour
+retrouver les liens produit. Les fiches deja presentes en base ne sont pas
+revisitees avec `resume_from_db=true`.
 
 Le validateur est volontairement separe du scraping. Il rend les exports
 controlables sans relancer de crawl.

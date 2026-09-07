@@ -137,6 +137,12 @@ def upsert_book(connection: psycopg.Connection, item: dict) -> None:
         cursor.execute(BOOK_UPSERT_SQL, build_book_params(item, category_id))
 
 
+def fetch_existing_product_urls(connection: psycopg.Connection) -> set[str]:
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT product_url FROM books;")
+        return {row[0] for row in cursor.fetchall()}
+
+
 def build_book_params(item: dict, category_id: int) -> dict:
     return {
         "upc": item["upc"],
