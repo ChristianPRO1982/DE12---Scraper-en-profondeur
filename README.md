@@ -6,6 +6,9 @@ Scrapy, PostgreSQL, Docker et UV.
 Le site cible est le bac a sable legal d'entrainement :
 <https://books.toscrape.com/>
 
+Depot du projet :
+<https://github.com/ChristianPRO1982/DE12---Scraper-en-profondeur>
+
 ## Objectif
 
 Le projet doit collecter les livres du catalogue, visiter les fiches produit,

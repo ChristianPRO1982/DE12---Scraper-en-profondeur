@@ -9,7 +9,9 @@ Les reglages sont centralises dans `books_catalog_scraper/settings.py`.
 
 ```python
 ROBOTSTXT_OBEY = True
-USER_AGENT = "DE12-books-scraper/0.1 (+https://github.com/student/de12-scraper-en-profondeur)"
+USER_AGENT = (
+    "DE12-books-scraper/0.1 (+https://github.com/ChristianPRO1982/DE12---Scraper-en-profondeur)"
+)
 DOWNLOAD_DELAY = 0.5
 RANDOMIZE_DOWNLOAD_DELAY = False
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
