@@ -208,6 +208,19 @@ Exports documentes le 2026-09-07.
 - Le full scrape et la validation `--full` restent a lancer pour produire le
   livrable final complet.
 
+### Requetes de demonstration
+
+Requetes de demonstration ajoutees le 2026-09-07.
+
+- Fichier ajoute : `db/demo_queries.sql`.
+- Commande rejouable :
+  `docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/demo_queries.sql'`.
+- Les requetes sont en lecture seule.
+- Elles affichent le total de livres, les doublons UPC, les doublons d'URL
+  produit, les stocks faibles, les livres les mieux notes, les categories et les
+  controles prix/taxe.
+- Elles peuvent etre lancees apres un sample ou apres le full scrape final.
+
 ## Blocages rencontres
 
 A completer au fil du projet.

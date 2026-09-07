@@ -205,3 +205,26 @@ eviter les ajouts involontaires.
 Documentation detaillee :
 
 - [16-phase-2-exports.md](16-phase-2-exports.md)
+
+## Requetes de demonstration
+
+Statut : realise.
+
+Les requetes de demonstration sont regroupees dans :
+
+```text
+db/demo_queries.sql
+```
+
+Commande :
+
+```bash
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/demo_queries.sql'
+```
+
+Elles permettent de verifier le nombre de livres, les doublons, les stocks
+faibles, les livres les mieux notes, les categories et les controles prix/taxe.
+
+Documentation detaillee :
+
+- [17-livrable-requetes-demonstration.md](17-livrable-requetes-demonstration.md)

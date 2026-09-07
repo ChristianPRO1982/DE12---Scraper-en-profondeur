@@ -487,7 +487,24 @@ Documentation :
 
 ## 12. Requetes de demonstration
 
-Preparer des requetes SQL pour repondre a la question centrale :
+Statut : realise.
+
+Les requetes SQL sont regroupees dans :
+
+```text
+db/demo_queries.sql
+```
+
+Commande rejouable :
+
+```bash
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/demo_queries.sql'
+```
+
+Cette commande ne modifie aucune donnee et peut etre relancee apres un sample ou
+apres le chargement final.
+
+Requetes principales pour repondre a la question centrale :
 
 ```sql
 SELECT *
@@ -513,6 +530,21 @@ GROUP BY upc
 HAVING COUNT(*) > 1;
 ```
 
+Resultat obtenu :
+
+- controle du nombre total de livres ;
+- controle des doublons UPC ;
+- controle des doublons URL produit ;
+- affichage des stocks faibles ;
+- affichage des livres les mieux notes ;
+- repartition par categorie ;
+- controle des prix et taxes.
+
+Documentation :
+
+- `docs/17-livrable-requetes-demonstration.md` : ajoute ;
+- `README.md` : commande de demonstration ajoutee.
+
 ## 13. Documentation finale
 
 Mettre a jour :
@@ -533,7 +565,8 @@ Mettre a jour :
 - `docs/13-phase-2-stockage-postgresql.md` ;
 - `docs/14-phase-2-reprise-apres-interruption.md` ;
 - `docs/15-phase-2-script-chargement.md` ;
-- `docs/16-phase-2-exports.md`.
+- `docs/16-phase-2-exports.md` ;
+- `docs/17-livrable-requetes-demonstration.md`.
 
 La documentation finale doit expliquer :
 

@@ -209,6 +209,16 @@ Verifier l'absence de doublons UPC en base :
 docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT COUNT(*) FROM (SELECT upc FROM books GROUP BY upc HAVING COUNT(*) > 1) AS duplicates;"'
 ```
 
+Lancer les requetes SQL de demonstration :
+
+```bash
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/demo_queries.sql'
+```
+
+Ces requetes ne modifient pas la base. Elles affichent le nombre de livres, les
+doublons eventuels, les stocks faibles, les meilleurs livres et des controles
+prix/taxe.
+
 ## Structure
 
 ```text
@@ -254,6 +264,7 @@ Livrables :
 - [09 - Livrable - Journal de bord](docs/09-livrable-journal-de-bord.md)
 - [10 - Livrable - Observations prix et taxe](docs/10-livrable-observations-prix-taxe.md)
 - [11 - Correction - Validation des exports](docs/11-correction-validation-exports.md)
+- [17 - Livrable - Requetes de demonstration](docs/17-livrable-requetes-demonstration.md)
 
 ## Qualite
 
@@ -283,6 +294,7 @@ Etat actuel :
 - pipeline optionnel de stockage PostgreSQL ;
 - reprise apres interruption par upsert PostgreSQL ;
 - script de chargement separe ;
+- requetes SQL de demonstration ;
 - export J1 `exports/books_list.json` ;
 - export sample `exports/books_details_sample.json` ;
 - pytest et coverage configures ;

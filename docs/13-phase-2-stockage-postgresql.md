@@ -109,6 +109,12 @@ Lire le catalogue :
 docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT upc, title, category, stock_quantity, rating FROM books_catalog ORDER BY title LIMIT 10;"'
 ```
 
+Lancer toutes les requetes de demonstration :
+
+```bash
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /app/db/demo_queries.sql'
+```
+
 ## Validation realisee
 
 Validation echantillon lancee le 2026-09-07 :
