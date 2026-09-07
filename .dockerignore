@@ -36,6 +36,7 @@ htmlcov/
 # Data exports and local outputs
 data/
 exports/
+tests/
 *.csv
 *.json
 *.jsonl

@@ -98,8 +98,21 @@ scrapy.cfg               Point d'entree Scrapy
 - [docs/installation.md](docs/installation.md)
 - [docs/fonctionnement.md](docs/fonctionnement.md)
 - [docs/environnement.md](docs/environnement.md)
+- [docs/qualite.md](docs/qualite.md)
 - [docs/journal-de-bord.md](docs/journal-de-bord.md)
 - [docs/observations-prix-taxe.md](docs/observations-prix-taxe.md)
+
+## Qualite
+
+Commandes de controle :
+
+```bash
+uv run ruff check . && uv run ruff format --check . && uv run pytest -q
+uv run coverage run -m pytest && uv run coverage report -m
+uv run ruff format .
+```
+
+La couverture de tests attendue est configuree a 100%.
 
 ## Etat actuel
 
@@ -109,6 +122,7 @@ Structure initiale uniquement :
 - configuration Docker Compose PostgreSQL ;
 - script SQL de creation de la base ;
 - projet Scrapy vide ;
+- pytest et coverage configures ;
 - documentation de lancement local.
 
 Le scraping, les pipelines et le chargement en base ne sont pas
