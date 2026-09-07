@@ -17,7 +17,8 @@ Etat attendu :
 - documentation minimale dans `README.md` et `docs/` ;
 - qualite preparee avec Ruff, Pytest et Coverage.
 
-Ce socle ne contient pas encore de spider, de pipeline ou de logique de scraping.
+Le socle initial ne contenait pas encore de spider, de pipeline ou de logique de
+scraping. Les spiders sont ajoutes dans les etapes suivantes de cette roadmap.
 
 Commandes de verification du socle :
 
@@ -55,7 +56,7 @@ Avant d'ecrire le scraper de production :
 
 Documentation a completer :
 
-- `docs/07-livrable-journal-de-bord.md` : complete ;
+- `docs/08-livrable-journal-de-bord.md` : complete ;
 - `docs/03-preparation-fonctionnement.md` : complete ;
 - `docs/05-phase-1-reconnaissance.md` : ajoute.
 
@@ -98,9 +99,11 @@ Resultat attendu en fin de J1 :
 Documentation :
 
 - `docs/06-phase-1-collecteur-pages-liste.md` : ajoute ;
-- `docs/07-livrable-journal-de-bord.md` : complete.
+- `docs/08-livrable-journal-de-bord.md` : complete.
 
 ## 4. Collecteur des fiches produit
+
+Statut : realise.
 
 Creer un spider Scrapy complet, par exemple `books_details`.
 
@@ -128,6 +131,29 @@ Commencer par un seul livre :
 - enrichir un livre de bout en bout ;
 - comparer les valeurs obtenues avec la fiche affichee dans le navigateur ;
 - corriger les selecteurs avant de passer a l'echelle.
+
+Resultat obtenu :
+
+- spider cree : `books_details` ;
+- extraction par libelle de la table `Product Information` ;
+- categorie extraite du fil d'Ariane ;
+- stock reel extrait depuis la fiche produit ;
+- UPC extrait pour servir de future cle de reprise ;
+- prix convertis avec `Decimal` ;
+- erreurs de carte ou de fiche journalisees puis ignorees ;
+- tests unitaires et tests spider ajoutes ;
+- validation reseau courte realisee sur fiches reelles.
+
+Commande cible :
+
+```bash
+uv run scrapy crawl books_details -O exports/books_details.json
+```
+
+Documentation :
+
+- `docs/07-phase-2-collecteur-fiches-produit.md` : ajoute ;
+- `docs/08-livrable-journal-de-bord.md` : complete.
 
 ## 5. Mode echantillon
 
@@ -293,8 +319,9 @@ Mettre a jour :
 - `docs/04-preparation-qualite.md` ;
 - `docs/05-phase-1-reconnaissance.md` ;
 - `docs/06-phase-1-collecteur-pages-liste.md` ;
-- `docs/07-livrable-journal-de-bord.md` ;
-- `docs/08-livrable-observations-prix-taxe.md`.
+- `docs/07-phase-2-collecteur-fiches-produit.md` ;
+- `docs/08-livrable-journal-de-bord.md` ;
+- `docs/09-livrable-observations-prix-taxe.md`.
 
 La documentation finale doit expliquer :
 

@@ -1,4 +1,4 @@
-# 07 - Livrable - Journal de bord
+# 08 - Livrable - Journal de bord
 
 Partie du brief liee : livrable final et suivi des blocages, essais et
 decisions pendant J1 et J2.
@@ -54,7 +54,30 @@ Details notes dans `06-phase-1-collecteur-pages-liste.md`.
 
 ### Collecte des fiches produit
 
-A completer pendant l'implementation.
+Collecteur realise le 2026-09-07.
+
+- Spider cree : `books_details`.
+- Commande de lancement complete :
+  `uv run scrapy crawl books_details -O exports/books_details.json`.
+- Parcours : le spider part des pages de liste, extrait les liens produit, puis
+  visite les fiches avec `response.follow`.
+- URLs produit : les liens relatifs sont dedupliques apres resolution en URL
+  absolue.
+- Champs extraits : UPC, titre, URL produit, categorie, note numerique, prix de
+  liste, prix HT, prix TTC, taxe, stock reel, nombre d'avis, description et URL
+  image.
+- Table `Product Information` : les valeurs sont lues par libelle `th`, pas par
+  position de ligne.
+- Categorie : elle est extraite du fil d'Ariane, en ignorant `Home` et `Books`.
+- Stock reel : il est extrait depuis le texte de disponibilite de la fiche, par
+  exemple `In stock (22 available)`.
+- Robustesse : une carte de liste ou une fiche invalide est journalisee et
+  ignoree, sans arreter toute la collecte.
+- Validation locale : tests unitaires et tests spider passent.
+- Validation reseau : un crawl d'echantillon a exporte 18 fiches reelles avec 0
+  echec avant arret automatique Scrapy.
+
+Details notes dans `07-phase-2-collecteur-fiches-produit.md`.
 
 ### Reprise apres interruption
 

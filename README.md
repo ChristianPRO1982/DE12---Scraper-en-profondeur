@@ -60,8 +60,7 @@ Verifier que le projet Scrapy est visible :
 uv run scrapy list
 ```
 
-A ce stade, aucun spider de production n'est encore implemente. La commande peut
-donc ne lister aucun spider, ce qui est normal pour cette premiere structure.
+La commande doit lister les spiders `books_list` et `books_details`.
 
 ## Configuration .env
 
@@ -108,10 +107,14 @@ Phase 1 :
 - [05 - Phase 1 - Reconnaissance du site](docs/05-phase-1-reconnaissance.md)
 - [06 - Phase 1 - Collecteur des pages de liste](docs/06-phase-1-collecteur-pages-liste.md)
 
+Phase 2 :
+
+- [07 - Phase 2 - Collecteur des fiches produit](docs/07-phase-2-collecteur-fiches-produit.md)
+
 Livrables :
 
-- [07 - Livrable - Journal de bord](docs/07-livrable-journal-de-bord.md)
-- [08 - Livrable - Observations prix et taxe](docs/08-livrable-observations-prix-taxe.md)
+- [08 - Livrable - Journal de bord](docs/08-livrable-journal-de-bord.md)
+- [09 - Livrable - Observations prix et taxe](docs/09-livrable-observations-prix-taxe.md)
 
 ## Qualite
 
@@ -133,9 +136,10 @@ Etat actuel :
 - configuration Docker Compose PostgreSQL ;
 - script SQL de creation de la base ;
 - collecteur Scrapy des pages de liste ;
+- collecteur Scrapy des fiches produit ;
 - export J1 `exports/books_list.json` ;
 - pytest et coverage configures ;
 - documentation de lancement local.
 
-La collecte des fiches produit, les pipelines et le chargement en base ne sont
-pas encore developpes.
+Le pipeline PostgreSQL, le mode echantillon metier et le chargement en base ne
+sont pas encore developpes.

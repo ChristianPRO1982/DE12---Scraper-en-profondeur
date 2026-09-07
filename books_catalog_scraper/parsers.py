@@ -1,4 +1,5 @@
-from decimal import Decimal
+import re
+from decimal import Decimal, InvalidOperation
 
 RATING_VALUES = {
     "One": 1,
@@ -21,7 +22,10 @@ def parse_price(value: str | None) -> Decimal:
         raise ValueError("Prix absent")
 
     normalized_value = cleaned_value.replace("£", "").replace(",", ".")
-    return Decimal(normalized_value)
+    try:
+        return Decimal(normalized_value)
+    except InvalidOperation as error:
+        raise ValueError(f"Prix invalide: {value!r}") from error
 
 
 def parse_rating(class_value: str | None) -> int:
@@ -32,3 +36,21 @@ def parse_rating(class_value: str | None) -> int:
             return RATING_VALUES[class_name]
 
     raise ValueError(f"Note introuvable dans la classe CSS: {class_value!r}")
+
+
+def parse_int(value: str | None) -> int:
+    cleaned_value = clean_text(value)
+    if not cleaned_value:
+        raise ValueError("Entier absent")
+
+    return int(cleaned_value)
+
+
+def parse_stock(value: str | None) -> int:
+    cleaned_value = clean_text(value)
+    stock_match = re.search(r"\((\d+)\s+available\)", cleaned_value)
+
+    if not stock_match:
+        raise ValueError(f"Stock introuvable: {value!r}")
+
+    return int(stock_match.group(1))

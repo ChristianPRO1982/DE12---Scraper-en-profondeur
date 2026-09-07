@@ -39,8 +39,12 @@ Verifier que Scrapy charge le projet :
 uv run scrapy list
 ```
 
-Au stade de la structure initiale, aucun spider n'est encore cree. Une liste vide
-est donc normale.
+La commande doit afficher :
+
+```text
+books_details
+books_list
+```
 
 ## Arret de PostgreSQL
 

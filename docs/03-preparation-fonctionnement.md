@@ -46,17 +46,34 @@ Documentation detaillee :
 
 ## Phase 2
 
-Le collecteur de fiches produit devra visiter chaque fiche et enrichir les
-donnees avec :
+Le collecteur de fiches produit visite chaque fiche et enrichit les donnees
+avec :
 
 - UPC ;
+- titre ;
+- URL produit ;
+- categorie ;
+- note numerique ;
+- prix de liste ;
 - prix hors taxe ;
 - prix TTC ;
 - taxe ;
 - stock reel ;
 - nombre d'avis ;
 - description ;
-- categorie.
+- URL image.
+
+Statut : realise avec le spider `books_details`.
+
+Commande :
+
+```bash
+uv run scrapy crawl books_details -O exports/books_details.json
+```
+
+Documentation detaillee :
+
+- [07-phase-2-collecteur-fiches-produit.md](07-phase-2-collecteur-fiches-produit.md)
 
 ## Reprise apres interruption
 
