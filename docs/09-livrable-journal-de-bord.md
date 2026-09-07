@@ -127,13 +127,53 @@ Correction realisee le 2026-09-07.
   avis, categories, prix, UPC et la coherence des URLs entre phase 1 et phase 2.
 - Validation locale : tests unitaires ajoutes et couverture maintenue a 100%.
 
+### Gestion des erreurs
+
+Gestion des erreurs realisee le 2026-09-07.
+
+- Parametre ajoute sur les spiders : `max_errors`.
+- Valeur par defaut : `50`.
+- Une carte ou une fiche invalide est journalisee puis ignoree.
+- Si le seuil est depasse, Scrapy ferme le spider avec une raison explicite,
+  par exemple `max_errors_exceeded_51`.
+- Les doublons d'URL restent journalises separement et ne comptent pas comme
+  erreurs de parsing.
+- Les commandes README documentent des seuils explicites pour reproduire les
+  memes conditions de lancement.
+- Validation locale : tests ajoutes pour le seuil, le parseur de parametre et
+  l'arret explicite.
+- Validation reseau : `limit=3` avec `max_errors=5` a exporte 3 livres avec 0
+  echec.
+
 ### Reprise apres interruption
 
-A completer pendant l'implementation et la demonstration.
+Reprise apres interruption realisee le 2026-09-07.
+
+- La reprise repose sur `books.upc` et `ON CONFLICT (upc) DO UPDATE`.
+- Chaque item sauvegarde est committe immediatement.
+- Relancer la meme commande ne cree pas de doublons.
+- Le crawler reparcourt les pages depuis le debut, ce qui reste acceptable pour
+  le brief.
+- Les commandes de demonstration et de verification SQL sont documentees.
+- Validation PostgreSQL reelle : apres relance de `limit=3`, la base contient 3
+  livres, 0 doublon UPC et 0 doublon URL produit.
 
 ### Chargement PostgreSQL
 
-A completer pendant l'implementation.
+Chargement PostgreSQL realise le 2026-09-07.
+
+- Pipeline ajoute : `PostgresPipeline`.
+- Activation explicite : `-s POSTGRES_ENABLED=true`.
+- Le pipeline est desactive par defaut pour ne pas imposer PostgreSQL lors des
+  exports JSON.
+- Les categories sont inserees ou mises a jour par nom.
+- Les livres sont inserees ou mises a jour avec `ON CONFLICT (upc) DO UPDATE`.
+- La cle retenue est l'UPC, pas le titre.
+- Un `commit` est fait apres chaque item.
+- Validation locale : tests unitaires du pipeline, de la configuration `.env` et
+  des requetes d'upsert.
+- Validation PostgreSQL reelle : un echantillon `limit=3` a sauvegarde 3 livres
+  et 3 categories, avec 0 doublon UPC apres relance.
 
 ## Blocages rencontres
 

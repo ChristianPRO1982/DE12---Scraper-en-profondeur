@@ -110,6 +110,22 @@ uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.js
 ```
 
 Relancer cette commande remplace l'export precedent grace a l'option `-O`.
+Le seuil d'erreurs par defaut est `max_errors=50`.
+
+Collecter un echantillon avec un seuil d'erreurs explicite :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -O exports/books_details_sample.json
+```
+
+Collecter le meme echantillon et le charger dans PostgreSQL :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -s POSTGRES_ENABLED=true -O exports/books_details_sample.json
+```
+
+Relancer exactement la meme commande est autorise : l'export est remplace et les
+livres deja presents en base sont mis a jour par UPC.
 
 Valider l'echantillon :
 
@@ -123,6 +139,20 @@ Collecter toutes les fiches produit :
 uv run scrapy crawl books_details -O exports/books_details.json
 ```
 
+Collecter toutes les fiches avec un seuil d'erreurs explicite :
+
+```bash
+uv run scrapy crawl books_details -a max_errors=50 -O exports/books_details.json
+```
+
+Collecter toutes les fiches et les charger dans PostgreSQL :
+
+```bash
+uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
+```
+
+Cette commande peut aussi etre relancee apres interruption.
+
 Valider l'export final :
 
 ```bash
@@ -133,14 +163,20 @@ Sequence recommandee avant le chargement PostgreSQL :
 
 ```bash
 uv run scrapy crawl books_list -O exports/books_list.json
-uv run scrapy crawl books_details -a limit=20 -O exports/books_details_sample.json
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -O exports/books_details_sample.json
 uv run python -m books_catalog_scraper.validate_exports --sample
-uv run scrapy crawl books_details -O exports/books_details.json
+uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
 uv run python -m books_catalog_scraper.validate_exports --full
 ```
 
 Le validateur `--full` echoue clairement si `exports/books_details.json` n'existe
 pas encore ou si l'export final est incomplet.
+
+Verifier l'absence de doublons UPC en base :
+
+```bash
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT COUNT(*) FROM (SELECT upc FROM books GROUP BY upc HAVING COUNT(*) > 1) AS duplicates;"'
+```
 
 ## Structure
 
@@ -176,6 +212,9 @@ Phase 2 :
 
 - [07 - Phase 2 - Collecteur des fiches produit](docs/07-phase-2-collecteur-fiches-produit.md)
 - [08 - Phase 2 - Temporisation et User-Agent](docs/08-phase-2-temporisation-user-agent.md)
+- [12 - Phase 2 - Gestion des erreurs](docs/12-phase-2-gestion-erreurs.md)
+- [13 - Phase 2 - Stockage PostgreSQL](docs/13-phase-2-stockage-postgresql.md)
+- [14 - Phase 2 - Reprise apres interruption](docs/14-phase-2-reprise-apres-interruption.md)
 
 Livrables :
 
@@ -206,9 +245,12 @@ Etat actuel :
 - collecteur Scrapy des fiches produit ;
 - mode echantillon avec `books_details -a limit=20` ;
 - temporisation et User-Agent configures ;
+- gestion d'erreurs avec seuil `max_errors` ;
 - validateur d'exports JSON ;
+- pipeline optionnel de stockage PostgreSQL ;
+- reprise apres interruption par upsert PostgreSQL ;
 - export J1 `exports/books_list.json` ;
 - pytest et coverage configures ;
 - documentation de lancement local.
 
-Le pipeline PostgreSQL et le chargement en base ne sont pas encore developpes.
+Le script de chargement separe n'est pas encore developpe.

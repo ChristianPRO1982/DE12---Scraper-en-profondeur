@@ -97,13 +97,39 @@ Le scraper utilise un User-Agent explicite et une temporisation fixe :
 Ces choix rendent les commandes plus rejouables et limitent la charge envoyee au
 site.
 
+## Gestion des erreurs
+
+Statut : realise.
+
+Les spiders `books_list` et `books_details` acceptent un seuil `max_errors`.
+
+Exemple :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -O exports/books_details_sample.json
+```
+
+Une carte ou une fiche invalide est journalisee puis ignoree. Si le nombre
+d'erreurs depasse le seuil, Scrapy ferme le spider avec une raison explicite.
+
+Documentation detaillee :
+
+- [12-phase-2-gestion-erreurs.md](12-phase-2-gestion-erreurs.md)
+
 ## Reprise apres interruption
 
-La reprise devra etre effective et demonstrable. La cle fonctionnelle retenue
-sera l'UPC, car le brief indique que le titre n'est pas une cle fiable.
+Statut : realise.
 
-Le mecanisme exact sera implemente plus tard avec le scraper et le chargement en
-base.
+La reprise est effective via PostgreSQL. La cle fonctionnelle retenue est l'UPC,
+car le brief indique que le titre n'est pas une cle fiable.
+
+Chaque item est committe apres son upsert. En cas d'interruption, les livres
+deja sauvegardes restent en base. A la relance, ils sont mis a jour au lieu
+d'etre dupliques.
+
+Documentation detaillee :
+
+- [14-phase-2-reprise-apres-interruption.md](14-phase-2-reprise-apres-interruption.md)
 
 ## Base de donnees
 
@@ -117,6 +143,24 @@ Le schema est cree par [../db/schema.sql](../db/schema.sql). Il contient :
 - `books_stock_alerts` : vue des livres en rupture ou en stock faible ;
 - `books_best_rated` : vue des livres notes 4 ou 5.
 
-Il n'y a pas de table intermediaire. Le chargement devra inserer directement les
-categories et les livres, puis utiliser `ON CONFLICT` sur `books.upc` pour rendre
+Il n'y a pas de table intermediaire. Le pipeline insere directement les
+categories et les livres, puis utilise `ON CONFLICT` sur `books.upc` pour rendre
 les executions successives idempotentes.
+
+Statut : realise avec le pipeline `PostgresPipeline`.
+
+Commande echantillon avec stockage :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -s POSTGRES_ENABLED=true -O exports/books_details_sample.json
+```
+
+Commande complete avec stockage :
+
+```bash
+uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
+```
+
+Documentation detaillee :
+
+- [13-phase-2-stockage-postgresql.md](13-phase-2-stockage-postgresql.md)

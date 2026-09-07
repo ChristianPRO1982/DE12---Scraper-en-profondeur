@@ -261,6 +261,8 @@ Documentation :
 
 ## 7. Gestion des erreurs
 
+Statut : realise.
+
 Le scraper ne doit pas tomber pour une fiche isolee.
 
 Comportement attendu :
@@ -279,7 +281,34 @@ Approche simple :
   - `parse_stock` ;
   - `parse_int`.
 
+Resultat obtenu :
+
+- les spiders `books_list` et `books_details` acceptent `max_errors` ;
+- la valeur par defaut est `50` ;
+- une erreur de parsing incremente `failed_products` ;
+- une carte ou une fiche invalide est journalisee puis ignoree tant que le seuil
+  n'est pas depasse ;
+- si le seuil est depasse, Scrapy ferme le spider avec une raison explicite,
+  par exemple `max_errors_exceeded_51` ;
+- les doublons d'URL restent journalises et ignores sans compter comme erreur de
+  parsing ;
+- tests dedies ajoutes.
+
+Commandes rejouables :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -O exports/books_details_sample.json
+uv run scrapy crawl books_details -a max_errors=50 -O exports/books_details.json
+```
+
+Documentation :
+
+- `docs/12-phase-2-gestion-erreurs.md` : ajoute ;
+- `README.md` : commandes avec `max_errors` ajoutees.
+
 ## 8. Stockage PostgreSQL
+
+Statut : realise.
 
 Utiliser le schema `db/schema.sql`.
 
@@ -299,7 +328,33 @@ Chargement attendu :
 - inserer le livre ;
 - utiliser `ON CONFLICT (upc) DO UPDATE` pour eviter les doublons.
 
+Resultat obtenu :
+
+- pipeline Scrapy optionnel `PostgresPipeline` ;
+- pipeline desactive par defaut pour conserver les exports JSON sans base ;
+- activation explicite avec `-s POSTGRES_ENABLED=true` ;
+- lecture de la configuration depuis `.env` ou l'environnement ;
+- insertion/upsert des categories ;
+- insertion/upsert des livres avec `books.upc` comme cle ;
+- `commit` apres chaque item ;
+- tests unitaires sans dependance a une base reelle ;
+- validation PostgreSQL reelle sur un echantillon de 3 livres.
+
+Commandes rejouables :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -s POSTGRES_ENABLED=true -O exports/books_details_sample.json
+uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
+```
+
+Documentation :
+
+- `docs/13-phase-2-stockage-postgresql.md` : ajoute ;
+- `README.md` : commandes PostgreSQL ajoutees.
+
 ## 9. Reprise apres interruption
+
+Statut : realise.
 
 La reprise est obligatoire.
 
@@ -316,6 +371,30 @@ Demonstration attendue :
 - interrompre volontairement ;
 - relancer la meme commande ;
 - verifier que la base ne contient pas de doublons.
+
+Resultat obtenu :
+
+- reprise basee sur l'upsert PostgreSQL ;
+- `books.upc` utilise comme cle primaire ;
+- `commit` apres chaque item ;
+- relance de la meme commande sans duplication ;
+- verification SQL des doublons UPC documentee ;
+- validation PostgreSQL reelle apres relance : 3 livres, 0 doublon UPC, 0
+  doublon URL produit ;
+- limite assumee : le crawler reparcourt les pages depuis le debut, mais les
+  lignes deja presentes sont mises a jour.
+
+Commandes rejouables :
+
+```bash
+uv run scrapy crawl books_details -a limit=20 -a max_errors=5 -s POSTGRES_ENABLED=true -O exports/books_details_sample.json
+uv run scrapy crawl books_details -a max_errors=50 -s POSTGRES_ENABLED=true -O exports/books_details.json
+```
+
+Documentation :
+
+- `docs/14-phase-2-reprise-apres-interruption.md` : ajoute ;
+- `README.md` : commandes de reprise et verification doublons ajoutees.
 
 ## 10. Script de chargement
 
@@ -395,7 +474,10 @@ Mettre a jour :
 - `docs/08-phase-2-temporisation-user-agent.md` ;
 - `docs/09-livrable-journal-de-bord.md` ;
 - `docs/10-livrable-observations-prix-taxe.md` ;
-- `docs/11-correction-validation-exports.md`.
+- `docs/11-correction-validation-exports.md` ;
+- `docs/12-phase-2-gestion-erreurs.md` ;
+- `docs/13-phase-2-stockage-postgresql.md` ;
+- `docs/14-phase-2-reprise-apres-interruption.md`.
 
 La documentation finale doit expliquer :
 

@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from scrapy import Request
+from scrapy.exceptions import CloseSpider
 from scrapy.http import HtmlResponse
 
 from books_catalog_scraper.spiders.books_list import BooksListSpider
@@ -161,6 +162,28 @@ def test_parse_ignores_invalid_product_and_continues() -> None:
         }
     ]
     assert spider.books_seen == 1
+    assert spider.failed_products == 1
+
+
+def test_parse_stops_when_error_limit_is_exceeded() -> None:
+    response = make_response(
+        """
+        <article class="product_pod">
+            <p class="star-rating Unknown"></p>
+            <h3><a href="catalogue/bad/index.html" title="Bad Book">Bad Book</a></h3>
+            <p class="price_color">£10.00</p>
+        </article>
+        """
+    )
+    spider = BooksListSpider(max_errors=0)
+
+    try:
+        list(spider.parse(response))
+    except CloseSpider as error:
+        assert error.reason == "max_errors_exceeded_1"
+    else:
+        raise AssertionError("CloseSpider attendu")
+
     assert spider.failed_products == 1
 
 

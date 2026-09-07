@@ -15,4 +15,9 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 LOG_LEVEL = "INFO"
 TELNETCONSOLE_ENABLED = False
 
+ITEM_PIPELINES = {
+    "books_catalog_scraper.pipelines.PostgresPipeline": 300,
+}
+POSTGRES_ENABLED = False
+
 FEEDS = {}

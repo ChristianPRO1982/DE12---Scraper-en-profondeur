@@ -2,7 +2,9 @@ from collections.abc import Iterator
 
 import scrapy
 from scrapy import Request, Selector
+from scrapy.exceptions import CloseSpider
 
+from books_catalog_scraper.error_policy import has_exceeded_error_limit, parse_max_errors
 from books_catalog_scraper.extractors import extract_list_book
 
 
@@ -15,8 +17,11 @@ class BooksListSpider(scrapy.Spider):
         "FEED_EXPORT_ENCODING": "utf-8",
     }
 
-    def __init__(self, *args: object, **kwargs: object) -> None:
+    def __init__(
+        self, max_errors: str | int | None = None, *args: object, **kwargs: object
+    ) -> None:
         super().__init__(*args, **kwargs)
+        self.max_errors = parse_max_errors(max_errors)
         self.pages_seen = 0
         self.books_seen = 0
         self.failed_products = 0
@@ -37,7 +42,7 @@ class BooksListSpider(scrapy.Spider):
             try:
                 book = self.parse_book(product, response)
             except ValueError as error:
-                self.failed_products += 1
+                self.record_failure()
                 self.logger.warning(
                     "Livre ignore sur %s: %s",
                     response.url,
@@ -73,3 +78,8 @@ class BooksListSpider(scrapy.Spider):
 
     def parse_book(self, product: Selector, response: scrapy.http.Response) -> dict:
         return extract_list_book(product, response)
+
+    def record_failure(self) -> None:
+        self.failed_products += 1
+        if has_exceeded_error_limit(self.failed_products, self.max_errors):
+            raise CloseSpider(f"max_errors_exceeded_{self.failed_products}")

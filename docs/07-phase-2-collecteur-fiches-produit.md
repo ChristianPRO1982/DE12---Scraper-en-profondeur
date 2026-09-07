@@ -100,7 +100,8 @@ La commande peut etre relancee a tout moment.
 
 ## Limites restantes
 
-Cette etape ne charge pas encore les donnees dans PostgreSQL.
+Cette etape peut maintenant charger les donnees dans PostgreSQL quand le setting
+`POSTGRES_ENABLED=true` est passe a Scrapy.
 
-La reprise apres interruption sera traitee avec le pipeline PostgreSQL et
-l'upsert sur `books.upc`.
+La reprise apres interruption sera approfondie dans l'etape suivante, sur la
+base du pipeline PostgreSQL et de l'upsert sur `books.upc`.

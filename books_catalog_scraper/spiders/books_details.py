@@ -2,7 +2,9 @@ from collections.abc import Iterator
 
 import scrapy
 from scrapy import Request
+from scrapy.exceptions import CloseSpider
 
+from books_catalog_scraper.error_policy import has_exceeded_error_limit, parse_max_errors
 from books_catalog_scraper.extractors import extract_list_book
 from books_catalog_scraper.parsers import (
     clean_text,
@@ -22,9 +24,16 @@ class BooksDetailsSpider(scrapy.Spider):
         "FEED_EXPORT_ENCODING": "utf-8",
     }
 
-    def __init__(self, limit: str | int | None = None, *args: object, **kwargs: object) -> None:
+    def __init__(
+        self,
+        limit: str | int | None = None,
+        max_errors: str | int | None = None,
+        *args: object,
+        **kwargs: object,
+    ) -> None:
         super().__init__(*args, **kwargs)
         self.limit = parse_limit(limit)
+        self.max_errors = parse_max_errors(max_errors)
         self.pages_seen = 0
         self.product_urls_seen: set[str] = set()
         self.product_requests = 0
@@ -49,7 +58,7 @@ class BooksDetailsSpider(scrapy.Spider):
             try:
                 list_book = extract_list_book(product, response)
             except ValueError as error:
-                self.failed_products += 1
+                self.record_failure()
                 self.logger.warning("Livre ignore sur %s: %s", response.url, error)
                 continue
 
@@ -86,7 +95,7 @@ class BooksDetailsSpider(scrapy.Spider):
         try:
             product = self.extract_product_details(response, list_book)
         except ValueError as error:
-            self.failed_products += 1
+            self.record_failure()
             self.logger.warning("Fiche produit ignoree %s: %s", response.url, error)
             return
 
@@ -164,6 +173,11 @@ class BooksDetailsSpider(scrapy.Spider):
 
     def has_reached_limit(self) -> bool:
         return self.limit is not None and self.product_requests >= self.limit
+
+    def record_failure(self) -> None:
+        self.failed_products += 1
+        if has_exceeded_error_limit(self.failed_products, self.max_errors):
+            raise CloseSpider(f"max_errors_exceeded_{self.failed_products}")
 
 
 def required_field(product_information: dict[str, str], field_name: str, product_url: str) -> str:

@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from scrapy import Request
+from scrapy.exceptions import CloseSpider
 from scrapy.http import HtmlResponse
 
 from books_catalog_scraper.spiders.books_details import (
@@ -254,6 +255,29 @@ def test_parse_list_page_ignores_invalid_product_card() -> None:
     assert spider.failed_products == 1
 
 
+def test_parse_list_page_stops_when_error_limit_is_exceeded() -> None:
+    response = make_response(
+        """
+        <article class="product_pod">
+            <p class="star-rating Unknown"></p>
+            <h3><a href="catalogue/book/index.html" title="Book">Book</a></h3>
+            <p class="price_color">£10.00</p>
+        </article>
+        """,
+        url="https://books.toscrape.com/",
+    )
+    spider = BooksDetailsSpider(max_errors=0)
+
+    try:
+        list(spider.parse(response))
+    except CloseSpider as error:
+        assert error.reason == "max_errors_exceeded_1"
+    else:
+        raise AssertionError("CloseSpider attendu")
+
+    assert spider.failed_products == 1
+
+
 def test_parse_product_yields_full_item() -> None:
     response = make_response(product_page_html())
     spider = BooksDetailsSpider()
@@ -270,6 +294,20 @@ def test_parse_product_ignores_invalid_product_page() -> None:
     spider = BooksDetailsSpider()
 
     assert list(spider.parse_product(response, list_book())) == []
+    assert spider.failed_products == 1
+
+
+def test_parse_product_stops_when_error_limit_is_exceeded() -> None:
+    response = make_response("<html></html>")
+    spider = BooksDetailsSpider(max_errors=0)
+
+    try:
+        list(spider.parse_product(response, list_book()))
+    except CloseSpider as error:
+        assert error.reason == "max_errors_exceeded_1"
+    else:
+        raise AssertionError("CloseSpider attendu")
+
     assert spider.failed_products == 1
 
 
